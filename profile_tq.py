@@ -5,6 +5,12 @@ import turboquant
 from turboquant import TurboQuant
 
 def run_bench(d, N, Q, label):
+    """
+    Run profiling benchmark.
+    d: Embedding dimension
+    N: Number of base database embeddings
+    Q: Number of query vectors
+    """
     print(f"\n--- Benchmarking {label} (d={d}, N={N}, Q={Q}) ---")
     U = np.random.randn(N, d).astype(np.float32)
     V = np.random.randn(Q, d).astype(np.float32)

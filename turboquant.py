@@ -1,9 +1,13 @@
 import numpy as np
 
 try:
-    from fast_hadamard import fwht_inplace as cpp_fwht_inplace
+    from fast_hadamard import (
+        fwht_inplace as cpp_fwht_inplace,
+        compute_dot_products as cpp_compute_dot_products
+    )
 except ImportError:
     cpp_fwht_inplace = None
+    cpp_compute_dot_products = None
 
 # -----------------------------------------------------------------------------
 # 4-bit TurboQuant Codebook parameters 
@@ -190,15 +194,21 @@ class TurboQuant:
         V_scale = 127.0 / V_max
         
         # 4. Quantize V to 8-bit signed integers
-        V_f64 = np.round(V_rot * V_scale).astype(np.float64)
+        V_int8 = np.round(V_rot * V_scale).astype(np.int8)
         
         # 5. Accelerated Integer Dot Product
-        # Computes P = V_int8 @ U_int8^T
-        P = np.dot(V_f64, self.U_int8_f64_T)
+        if cpp_compute_dot_products is not None:
+            # Use high-performance SIMD implementation (Result: int32)
+            # Cast to float64 for subsequent analytical scaling
+            P = cpp_compute_dot_products(V_int8, self.U_int8).astype(np.float64)
+        else:
+            # Fallback to NumPy dot product
+            # We use the cached float64 version of U for compatibility with np.dot
+            P = np.dot(V_int8.astype(np.float64), self.U_int8_f64_T)
         
         # 6. Final reconstruction scaling
         # Scale_V = Norm_V / sqrt(sum(V_int8^2))
-        V_int8_sqr_sum = np.sum(V_f64**2, axis=-1)
+        V_int8_sqr_sum = np.sum(V_int8.astype(np.float64)**2, axis=-1)
         V_int8_sqr_sum[V_int8_sqr_sum < 1e-12] = 1e-12
         Scale_V = Norm_V / np.sqrt(V_int8_sqr_sum)
         
