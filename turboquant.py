@@ -1,5 +1,10 @@
 import numpy as np
 
+try:
+    from fast_hadamard import fwht_inplace as cpp_fwht_inplace
+except ImportError:
+    cpp_fwht_inplace = None
+
 # -----------------------------------------------------------------------------
 # 4-bit TurboQuant Codebook parameters 
 # Pre-computed analytically using K-means on the standard normal distribution
@@ -78,17 +83,21 @@ class HadamardRotation:
         n = self.two_k
         k = n.bit_length() - 1
         if k > 0:
-            # Iterative FWHT implementation with O(d log d) complexity
-            for i in range(k):
-                s = 1 << i
-                # View as pairs of blocks to perform butterfly operations
-                out_split = out_view.reshape(out_view.shape[:-1] + (n // (s << 1), 2, s))
-                
-                # Use a temp for half the data to avoid overwriting during in-place calculation
-                tmp = out_split[..., 0, :].copy()
-                out_split[..., 0, :] += out_split[..., 1, :]
-                out_split[..., 1, :] *= -1.0
-                out_split[..., 1, :] += tmp
+            if cpp_fwht_inplace is not None:
+                # Use high-performance C++ implementation to transform the 2^k subspace in-place
+                cpp_fwht_inplace(out_view)
+            else:
+                # Iterative FWHT implementation with O(d log d) complexity (NumPy fallback)
+                for i in range(k):
+                    s = 1 << i
+                    # View as pairs of blocks to perform butterfly operations
+                    out_split = out_view.reshape(out_view.shape[:-1] + (n // (s << 1), 2, s))
+                    
+                    # Use a temp for half the data to avoid overwriting during in-place calculation
+                    tmp = out_split[..., 0, :].copy()
+                    out_split[..., 0, :] += out_split[..., 1, :]
+                    out_split[..., 1, :] *= -1.0
+                    out_split[..., 1, :] += tmp
                 
         # 3. Mix across the r-subspaces using orthogonal matrix M
         if self.r > 1:
