@@ -1,0 +1,155 @@
+<svg width="1400" height="1180" viewBox="0 0 1400 1180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="laneBase" x1="90" y1="126" x2="630" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF6FF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#F7FBFF" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="laneQuery" x1="770" y1="126" x2="1310" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F2FF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#FCFAFF" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="cardShared" x1="250" y1="188" x2="1150" y2="472" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#F8FAFD" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="cardBase" x1="80" y1="560" x2="660" y2="824" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#EEF5FF" stop-opacity="0.84"/>
+    </linearGradient>
+    <linearGradient id="cardQuery" x1="740" y1="560" x2="1320" y2="824" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBF7FF" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#F4EEFF" stop-opacity="0.84"/>
+    </linearGradient>
+    <linearGradient id="cardFinal" x1="318" y1="1116" x2="1082" y2="1172" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8E8" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#FFF2CC" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="shadow" x="-40" y="-40" width="1480" height="1260" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0F172A" flood-opacity="0.05"/>
+    </filter>
+    <filter id="softShadow" x="-20" y="-20" width="1440" height="1220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.04"/>
+    </filter>
+    <marker id="arrowBase" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0L8 4L0 8V0Z" fill="#5E8DFF"/>
+    </marker>
+    <marker id="arrowQuery" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0L8 4L0 8V0Z" fill="#A377F6"/>
+    </marker>
+    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0L8 4L0 8V0Z" fill="#E8B946"/>
+    </marker>
+    <style>
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; fill: #111827; letter-spacing: -0.02em; }
+      .subtitle { font: 500 17px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; fill: #6B7280; }
+      .lane { font: 700 20px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; letter-spacing: 0.04em; }
+      .step { font: 700 17px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; fill: #111827; }
+      .body { font: 500 15px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; fill: #374151; }
+      .bodyCenter { font: 500 15px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; fill: #374151; text-anchor: middle; }
+      .formula { font: 600 18px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; fill: #0F172A; letter-spacing: -0.01em; }
+      .tiny { font: 700 12px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; fill: #64748B; letter-spacing: 0.08em; }
+      .footer { font: 500 13px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; fill: #8C8C93; }
+    </style>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <rect x="246" y="22" width="908" height="98" rx="28" fill="#FFFFFF" fill-opacity="0.72" stroke="#E6ECF5" stroke-width="1.2"/>
+  </g>
+  <text x="700" y="70" text-anchor="middle" class="title">TurboQuant Asymmetric Scoring Pipeline</text>
+  <text x="700" y="100" text-anchor="middle" class="subtitle">Reference path in turboquant.py, with an optional float-V_rot comparison branch from the explainer</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="90" y="126" width="540" height="54" rx="18" fill="url(#laneBase)" stroke="#BFD7FF" stroke-width="1.5"/>
+    <rect x="770" y="126" width="540" height="54" rx="18" fill="url(#laneQuery)" stroke="#DCCBFF" stroke-width="1.5"/>
+  </g>
+  <text x="360" y="160" text-anchor="middle" class="lane" fill="#4E8BEE">BASE / OFFLINE STORAGE</text>
+  <text x="1040" y="160" text-anchor="middle" class="lane" fill="#8D62E8">QUERY / SCORE TIME</text>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="188" width="900" height="92" rx="24" fill="url(#cardShared)" stroke="#D8E5F4" stroke-width="1.4"/>
+    <rect x="314" y="225" width="254" height="40" rx="12" fill="#EAF3FF" stroke="#C7DCFF" stroke-width="1.2"/>
+    <rect x="832" y="225" width="254" height="40" rx="12" fill="#F2EAFF" stroke="#DFCFFF" stroke-width="1.2"/>
+  </g>
+  <text x="700" y="220" text-anchor="middle" class="step">1) Input Vectors</text>
+  <text x="441" y="251" text-anchor="middle" class="step" fill="#2F6FDE">Base Vector U</text>
+  <text x="959" y="251" text-anchor="middle" class="step" fill="#7B54D7">Query Vector V</text>
+  <text x="700" y="302" text-anchor="middle" class="subtitle">Store base embeddings once, then score many queries later</text>
+
+  <path d="M700 320V354" stroke="#7EA7FF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="366" width="900" height="106" rx="24" fill="url(#cardShared)" stroke="#D8E5F4" stroke-width="1.4"/>
+    <rect x="330" y="408" width="740" height="42" rx="13" fill="#F9FBFE" stroke="#DDE7F5" stroke-width="1.1"/>
+  </g>
+  <text x="700" y="399" text-anchor="middle" class="step">2) Structured Rotation</text>
+  <text x="700" y="434" text-anchor="middle" class="formula">y = M · H · D · x</text>
+  <text x="700" y="458" class="bodyCenter">FWHT for power-of-two dimensions; general dimensions use d = r · 2^k with orthogonal mixing.</text>
+  <text x="700" y="490" text-anchor="middle" class="subtitle">Optional random signs D decorrelate coordinates before the Hadamard step.</text>
+
+  <path d="M700 490V520" stroke="#7EA7FF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round"/>
+  <path d="M700 520L370 520L370 548" stroke="#5E8DFF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M700 520L1030 520L1030 548" stroke="#A377F6" stroke-width="2.6" marker-end="url(#arrowQuery)" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="560" width="580" height="112" rx="24" fill="url(#cardBase)" stroke="#BED8FF" stroke-width="1.4"/>
+    <rect x="740" y="560" width="580" height="112" rx="24" fill="url(#cardQuery)" stroke="#DBC9FF" stroke-width="1.4"/>
+    <rect x="120" y="602" width="500" height="42" rx="13" fill="#FCFEFF" stroke="#D6E5F8" stroke-width="1.1"/>
+    <rect x="780" y="602" width="500" height="42" rx="13" fill="#FEFCFF" stroke="#E4D9FB" stroke-width="1.1"/>
+  </g>
+  <text x="370" y="595" text-anchor="middle" class="step">3A) Standardize Base Only</text>
+  <text x="370" y="629" text-anchor="middle" class="formula">U_std = (U_rot / ||U_rot||) · sqrt(d)</text>
+  <text x="370" y="654" class="bodyCenter">Match the standard-normal codebook used on the base side.</text>
+
+  <text x="1030" y="595" text-anchor="middle" class="step">3B) Keep Query In Rotated Space</text>
+  <text x="1030" y="629" text-anchor="middle" class="formula">V_rot stays dynamic</text>
+  <text x="1030" y="654" class="bodyCenter">Main path quantizes V_rot to int8 at score time.</text>
+
+  <path d="M370 672V700" stroke="#5E8DFF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round"/>
+  <path d="M1030 672V700" stroke="#A377F6" stroke-width="2.6" marker-end="url(#arrowQuery)" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="712" width="580" height="112" rx="24" fill="url(#cardBase)" stroke="#BED8FF" stroke-width="1.4"/>
+    <rect x="740" y="712" width="580" height="112" rx="24" fill="url(#cardQuery)" stroke="#DBC9FF" stroke-width="1.4"/>
+  </g>
+  <text x="370" y="747" text-anchor="middle" class="step">4A) Base Quantization: 4-bit Codebook</text>
+  <text x="370" y="777" class="bodyCenter">Bucket by |U_std[i]|, then map bucket + sign to the TurboQuant int8 representative.</text>
+  <text x="370" y="806" text-anchor="middle" class="formula">U_int8 = codebook(bucket, sign)</text>
+
+  <text x="1030" y="747" text-anchor="middle" class="step">4B) Query Quantization: Int8 Linear Scaling</text>
+  <text x="1030" y="777" class="bodyCenter">Scale V_rot so max(abs(V_rot)) reaches 127, then round.</text>
+  <text x="1030" y="806" text-anchor="middle" class="formula">V_int8 = round(V_rot · 127 / max(|V_rot|))</text>
+
+  <path d="M370 826V852L700 852V868" stroke="#5E8DFF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1030 826V852L700 852V868" stroke="#A377F6" stroke-width="2.6" marker-end="url(#arrowQuery)" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="380" y="880" width="640" height="94" rx="24" fill="url(#cardShared)" stroke="#D8E5F4" stroke-width="1.4"/>
+  </g>
+  <text x="700" y="913" text-anchor="middle" class="step">5) Integer Dot Product</text>
+  <text x="700" y="946" text-anchor="middle" class="formula">P = Σ (U_int8 · V_int8)</text>
+  <text x="700" y="968" class="bodyCenter">This is the throughput-critical SIMD-friendly computation.</text>
+
+  <path d="M700 976V998" stroke="#E8B946" stroke-width="2.6" marker-end="url(#arrowGold)" stroke-linecap="round"/>
+  <path d="M700 998L370 998L370 1018" stroke="#5E8DFF" stroke-width="2.6" marker-end="url(#arrowBase)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M700 998L1030 998L1030 1018" stroke="#A377F6" stroke-width="2.6" marker-end="url(#arrowQuery)" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="1030" width="580" height="76" rx="24" fill="url(#cardBase)" stroke="#BED8FF" stroke-width="1.4"/>
+    <rect x="740" y="1030" width="580" height="76" rx="24" fill="url(#cardQuery)" stroke="#DBC9FF" stroke-width="1.4"/>
+  </g>
+  <text x="370" y="1060" text-anchor="middle" class="step">6A) Scale_U</text>
+  <text x="370" y="1086" text-anchor="middle" class="formula">Norm_U / √Σ centroid_energy[bucket_i]</text>
+
+  <text x="1030" y="1060" text-anchor="middle" class="step">6B) Scale_V</text>
+  <text x="1030" y="1086" text-anchor="middle" class="formula">Norm_V / √Σ V_int8²</text>
+
+  <path d="M370 1108V1130L700 1130V1140" stroke="#5E8DFF" stroke-width="2.6" marker-end="url(#arrowGold)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1030 1108V1130L700 1130V1140" stroke="#A377F6" stroke-width="2.6" marker-end="url(#arrowGold)" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="318" y="1116" width="764" height="56" rx="24" fill="url(#cardFinal)" stroke="#F0D27A" stroke-width="1.6"/>
+  </g>
+  <text x="700" y="1140" text-anchor="middle" class="step">7) Final Reconstructed Score</text>
+  <text x="700" y="1162" text-anchor="middle" class="formula">Score = P · Scale_U · Scale_V</text>
+
+</svg>

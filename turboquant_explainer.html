@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TurboQuant Explainer</title>
+  <style>
+    :root {
+      --ink: #1d2433;
+      --muted: #687386;
+      --line: #dfe5ef;
+      --panel: #ffffff;
+      --soft: #f6f8fc;
+      --blue: #5d8df6;
+      --blue-weak: #dbe7ff;
+      --green: #2bbf7f;
+      --green-weak: #dff7ec;
+      --coral: #ef776d;
+      --coral-weak: #ffe1de;
+      --violet: #7657d8;
+      --violet-weak: #e8e2ff;
+      --amber: #d79d17;
+      --amber-weak: #fff1ca;
+      --shadow: 0 14px 40px rgba(35, 52, 84, 0.10);
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--soft);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1180px;
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f7f9fd 42%, #f2f5fb 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .topbar {
+      height: 56px;
+      display: grid;
+      grid-template-columns: auto minmax(420px, 1fr) auto auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-weight: 850;
+      letter-spacing: 0;
+      color: #526cf0;
+      text-transform: uppercase;
+      font-size: 20px;
+      white-space: nowrap;
+    }
+
+    .formula {
+      height: 36px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      min-width: 0;
+      color: var(--muted);
+      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
+    }
+
+    .formula strong {
+      color: var(--violet);
+      margin: 0 4px;
+    }
+
+    .top-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .select,
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: var(--radius);
+      height: 36px;
+      padding: 0 12px;
+      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
+    }
+
+    .btn {
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    .btn:hover {
+      border-color: #bac7da;
+      background: #f9fbff;
+    }
+
+    .switch {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid #c9d3e4;
+      background: #e9eef7;
+      position: relative;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 2px;
+      left: 3px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: transform 150ms ease;
+    }
+
+    .switch[aria-checked="true"] {
+      background: var(--violet);
+      border-color: var(--violet);
+    }
+
+    .switch[aria-checked="true"]::after {
+      transform: translateX(18px);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 312px 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.74);
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .workspace {
+      padding: 18px 22px 28px;
+      overflow: auto;
+    }
+
+    .panel,
+    .metric,
+    .stage,
+    .data-table {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
+    }
+
+    .panel {
+      margin-bottom: 14px;
+      padding: 14px;
+    }
+
+    .panel h2,
+    .table-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 12px;
+      color: #8b96a8;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .vector-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .vector-row {
+      display: grid;
+      grid-template-columns: 30px repeat(var(--dim), 40px);
+      gap: 4px;
+      align-items: center;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .vector-row label {
+      font-weight: 780;
+      color: var(--muted);
+    }
+
+    .num {
+      width: 40px;
+      min-width: 0;
+      border: 1px solid #cad4e3;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 6px;
+      height: 34px;
+      padding: 0 5px;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .num:focus {
+      outline: 2px solid rgba(93, 141, 246, 0.18);
+      border-color: var(--blue);
+    }
+
+    .num::-webkit-outer-spin-button,
+    .num::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .num {
+      appearance: textfield;
+    }
+
+    .codebook {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .codebook span {
+      border-radius: 6px;
+      padding: 7px 5px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 750;
+      background: var(--soft);
+      color: var(--muted);
+      border: 1px solid #e2e8f1;
+    }
+
+    .codebook .pos {
+      color: #146d4c;
+      background: var(--green-weak);
+    }
+
+    .codebook .neg {
+      color: #a43c35;
+      background: var(--coral-weak);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      padding: 12px 13px;
+      min-height: 72px;
+    }
+
+    .metric .label {
+      color: #8b96a8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .metric .value {
+      margin-top: 7px;
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .metric .note {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .flow-wrap {
+      position: relative;
+      --flow-scale: 1;
+      width: 100%;
+      height: calc(760px * var(--flow-scale));
+      min-height: 360px;
+      max-height: calc(100vh - 168px);
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .flow-canvas {
+      position: relative;
+      width: 1660px;
+      height: 760px;
+      transform-origin: top left;
+      transform: scale(var(--flow-scale));
+      background:
+        linear-gradient(90deg, rgba(93, 141, 246, 0.045), transparent 21%, rgba(43, 191, 127, 0.055) 45%, transparent 69%, rgba(118, 87, 216, 0.06)),
+        #fff;
+    }
+
+    .flow-canvas::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, rgba(60, 76, 104, 0.06) 1px, transparent 1px);
+      background-size: 88px 100%;
+      pointer-events: none;
+    }
+
+    #ribbons {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .stage {
+      position: absolute;
+      z-index: 2;
+      width: 170px;
+      min-height: 108px;
+      padding: 12px;
+      box-shadow: 0 8px 22px rgba(35, 52, 84, 0.08);
+    }
+
+    .stage.wide {
+      width: 210px;
+    }
+
+    .stage.slim {
+      width: 148px;
+    }
+
+    .stage .kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9aa5b6;
+      margin-bottom: 4px;
+    }
+
+    .stage .title {
+      font-weight: 820;
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stage .title span:last-child {
+      font-weight: 750;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .node-input { left: 24px; top: 120px; }
+    .node-matrix { left: 252px; top: 94px; width: 164px; min-height: 210px; }
+    .node-rotation { left: 442px; top: 118px; }
+    .node-base { left: 664px; top: 56px; }
+    .node-query { left: 664px; top: 333px; }
+    .node-codebook { left: 888px; top: 56px; }
+    .node-linear { left: 888px; top: 333px; }
+    .node-dot { left: 1100px; top: 184px; }
+    .node-scale { left: 1294px; top: 184px; }
+    .node-alt { left: 360px; top: 486px; width: 244px; min-height: 150px; }
+    .node-alt-score { left: 1470px; top: 486px; }
+    .node-score { left: 1470px; top: 184px; }
+
+    .chip-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .chip {
+      flex: 0 0 43px;
+      border-radius: 5px;
+      padding: 5px 4px;
+      min-width: 0;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      font-weight: 750;
+      color: #243045;
+      background: #eef2f7;
+      border: 1px solid rgba(90, 106, 130, 0.16);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chip.u { background: var(--blue-weak); color: #214eaa; }
+    .chip.v { background: var(--violet-weak); color: #4d35a5; }
+    .chip.good { background: var(--green-weak); color: #146d4c; }
+    .chip.hot { background: var(--coral-weak); color: #9e342d; }
+    .chip.warn { background: var(--amber-weak); color: #8a5d00; }
+
+    .chip.long {
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: left;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .matrix-frame {
+      border: 1px solid #d7deea;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #fbfcff, #f2f5fb);
+      padding: 8px;
+      overflow: auto;
+      max-height: 130px;
+    }
+
+    .matrix-grid {
+      display: grid;
+      gap: 3px;
+      min-width: max-content;
+    }
+
+    .matrix-cell {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      border: 1px solid rgba(90, 106, 130, 0.16);
+      background: #ffffff;
+      color: #4f5f77;
+    }
+
+    .matrix-cell.pos {
+      background: var(--blue-weak);
+      color: #214eaa;
+    }
+
+    .matrix-cell.neg {
+      background: var(--coral-weak);
+      color: #9e342d;
+    }
+
+    .mini-formula {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #dbe2ed;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .big-score {
+      color: var(--violet);
+      font-size: 30px;
+      font-weight: 850;
+      line-height: 1;
+      margin: 4px 0 7px;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #edf1f6;
+      margin-top: 8px;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--green), var(--violet));
+      transition: width 120ms ease;
+    }
+
+    .tables {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 14px;
+      min-width: 1040px;
+    }
+
+    .data-table {
+      overflow: hidden;
+    }
+
+    .data-table .table-title {
+      padding: 12px 14px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      border-top: 1px solid #edf1f6;
+      padding: 8px 9px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    th {
+      color: #8b96a8;
+      font-weight: 750;
+      background: #fbfcff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 3px 7px;
+      min-width: 30px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(90, 106, 130, 0.18);
+    }
+
+    .pill.pos {
+      background: var(--green-weak);
+      color: #146d4c;
+    }
+
+    .pill.neg {
+      background: var(--coral-weak);
+      color: #9e342d;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .callout {
+      padding: 10px;
+      border-radius: var(--radius);
+      background: #f7f9fd;
+      border: 1px solid #e5ebf4;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1260px) {
+      body {
+        min-width: 1040px;
+      }
+
+      .app {
+        grid-template-columns: 280px 1fr;
+      }
+
+      .tables {
+        min-width: 980px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">TurboQuant Explainer</div>
+    <div class="formula">Score = <strong>P</strong> x <strong>Scale_U</strong> x <strong>Scale_V</strong></div>
+    <label class="top-control">
+      Dimension
+      <select id="dimSelect" class="select" aria-label="Dimension">
+        <option value="4" selected>4D worked example</option>
+        <option value="8">8D power-of-two</option>
+        <option value="16">16D power-of-two</option>
+      </select>
+    </label>
+    <div class="top-control">
+      Random signs D
+      <button id="signToggle" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle random sign rotation"></button>
+    </div>
+    <button id="resetBtn" class="btn" type="button">Reset</button>
+  </header>
+
+  <main class="app">
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>Input Vectors</h2>
+        <div id="vectorGrid" class="vector-grid"></div>
+        <p class="small">Edit any value. The rotation, codebook buckets, integer dot product, scales, and reconstructed score update immediately.</p>
+      </section>
+
+      <section class="panel">
+        <h2>4-bit Codebook</h2>
+        <div id="codebook" class="codebook"></div>
+        <div class="legend">
+          <span><i class="swatch" style="background: var(--green-weak); border: 1px solid #bbe8d0;"></i> positive half</span>
+          <span><i class="swatch" style="background: var(--coral-weak); border: 1px solid #f4c3bf;"></i> negative half</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Bucket Boundaries</h2>
+        <div id="boundaries" class="callout"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Rotation Notes</h2>
+        <div id="rotationNotes" class="callout"></div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">Exact U dot V</div>
+          <div id="exactDot" class="value">0</div>
+          <div class="note">original float vectors</div>
+        </div>
+        <div class="metric">
+          <div class="label">TurboQuant Score</div>
+          <div id="tqScore" class="value">0</div>
+          <div class="note">integer path rebuilt</div>
+        </div>
+        <div class="metric">
+          <div class="label">Float-V Score</div>
+          <div id="floatVScore" class="value">0</div>
+          <div class="note">rotate V, no V quantization</div>
+        </div>
+        <div class="metric">
+          <div class="label">Raw Int Dot P</div>
+          <div id="rawP" class="value">0</div>
+          <div class="note">sum(U_int8 x V_int8)</div>
+        </div>
+        <div class="metric">
+          <div class="label">Path Delta</div>
+          <div id="pathDelta" class="value">0</div>
+          <div id="pathNote" class="note">compare both score paths</div>
+        </div>
+        <div class="metric">
+          <div class="label">Absolute Error</div>
+          <div id="absError" class="value">0</div>
+          <div id="relError" class="note">0 percent relative</div>
+        </div>
+      </div>
+
+      <div id="flow" class="flow-wrap" aria-label="TurboQuant flow diagram">
+        <div id="flowCanvas" class="flow-canvas">
+        <svg id="ribbons" viewBox="0 0 1660 760" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+        <div class="stage wide node-input">
+          <div class="kicker">Original space</div>
+          <div class="title"><span>Input U and V</span><span>d=<b id="dimBadge">4</b></span></div>
+          <div class="chip-list">
+            <div id="inputU" class="chips"></div>
+            <div id="inputV" class="chips"></div>
+          </div>
+          <div class="mini-formula">Norms are captured before quantization.</div>
+        </div>
+
+        <div class="stage node-matrix">
+          <div class="kicker">Operator</div>
+          <div class="title"><span>Hadamard matrix</span><span id="matrixBadge">H4</span></div>
+          <div class="matrix-frame">
+            <div id="hadamardMatrix" class="matrix-grid"></div>
+          </div>
+          <div id="matrixText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage wide node-rotation">
+          <div class="kicker">Step 1</div>
+          <div class="title"><span>D then FWHT</span><span>H</span></div>
+          <div class="chip-list">
+            <div id="rotU" class="chips"></div>
+            <div id="rotV" class="chips"></div>
+          </div>
+          <div id="signVector" class="mini-formula"></div>
+        </div>
+
+        <div class="stage wide node-base">
+          <div class="kicker">Base branch</div>
+          <div class="title"><span>Standardize U</span><span>sqrt(d)</span></div>
+          <div id="stdU" class="chips"></div>
+          <div id="uNormText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage wide node-query">
+          <div class="kicker">Query branch</div>
+          <div class="title"><span>Keep V_rot</span><span>dynamic</span></div>
+          <div id="queryRotAgain" class="chips"></div>
+          <div id="vMaxText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage wide node-codebook">
+          <div class="kicker">Step 2A</div>
+          <div class="title"><span>4-bit U lookup</span><span>16 levels</span></div>
+          <div id="uInt8" class="chips"></div>
+          <div id="bucketText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage wide node-linear">
+          <div class="kicker">Step 2B</div>
+          <div class="title"><span>8-bit V scale</span><span>max->127</span></div>
+          <div id="vInt8" class="chips"></div>
+          <div id="vScaleText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage slim node-dot">
+          <div class="kicker">Step 3</div>
+          <div class="title"><span>Integer dot</span></div>
+          <div id="dotValue" class="big-score"></div>
+          <div class="mini-formula">P = sum(U_int8 x V_int8)</div>
+        </div>
+
+        <div class="stage slim node-scale">
+          <div class="kicker">Step 4</div>
+          <div class="title"><span>Re-scale</span></div>
+          <div id="scaleValues" class="chip-list"></div>
+          <div class="mini-formula">Base uses debiased centroid energy.</div>
+        </div>
+
+        <div class="stage node-alt">
+          <div class="kicker">Alt path</div>
+          <div class="title"><span>Float V_rot</span><span>no int8</span></div>
+          <div id="altValues" class="chip-list"></div>
+          <div id="altText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage slim node-alt-score">
+          <div class="kicker">Alt Output</div>
+          <div class="title"><span>Score_alt</span></div>
+          <div id="altScoreValue" class="big-score"></div>
+          <div id="altScoreText" class="mini-formula"></div>
+        </div>
+
+        <div class="stage slim node-score">
+          <div class="kicker">Output</div>
+          <div class="title"><span>Score</span></div>
+          <div id="scoreValue" class="big-score"></div>
+          <div class="bar"><span id="accuracyBar"></span></div>
+          <div id="scoreText" class="mini-formula"></div>
+        </div>
+        </div>
+      </div>
+
+      <div class="tables">
+        <section class="data-table">
+          <div class="table-title">Per-dimension State</div>
+          <table>
+            <thead>
+              <tr>
+                <th colspan="7">Shared State</th>
+                <th colspan="2">Main Path</th>
+                <th colspan="2">Float-V Path</th>
+              </tr>
+              <tr>
+                <th>i</th>
+                <th>U</th>
+                <th>V</th>
+                <th>U_rot</th>
+                <th>U_std</th>
+                <th>Bucket</th>
+                <th>U_int8</th>
+                <th>V_int8</th>
+                <th>U_int8*V_int8</th>
+                <th>V_rot</th>
+                <th>U_int8*V_rot</th>
+              </tr>
+            </thead>
+            <tbody id="stateRows"></tbody>
+          </table>
+        </section>
+
+        <section class="data-table">
+          <div class="table-title">Scale Reconstruction</div>
+          <table>
+            <tbody id="scaleRows"></tbody>
+          </table>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const INT8_CODEBOOK = [6, 18, 31, 44, 58, 75, 96, 127, -6, -18, -31, -44, -58, -75, -96, -127];
+    const POS_BOUNDARIES = [0.2582925, 0.5225402, 0.799742, 1.0995197, 1.4373973, 1.8437953, 2.4010493];
+    const SQUARED_CENTROIDS_WITH_DEBIAS = [35.64, 323.14, 941.89, 1918.14, 3370.57, 5613.62, 9187.76, 16052.2];
+    const SIGN_VECTORS_SEED_42 = {
+      2: [-1, 1],
+      4: [-1, 1, -1, -1],
+      8: [-1, 1, -1, -1, -1, 1, -1, -1],
+      16: [-1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1]
+    };
+
+    const DEFAULTS = {
+      4: {
+        U: [2, 4, -2, 0],
+        V: [7, -1, 0, 1]
+      },
+      8: {
+        U: [5.83, 5.19, 5.41, 2.71, 7.48, 5.23, 4.42, 8.04],
+        V: [4.93, 2.82, 4.39, 1.57, 6.57, 4.38, 3.89, 6.61]
+      },
+      16: {
+        U: [4.79, 5.41, 6.11, 4.34, 6.14, 4.88, 4.56, 5.43, 5.29, 4.8, 6.17, 5.22, 7.51, 4.13, 3.98, 6.5],
+        V: [6.6, 7.06, 6.41, 4.42, 3.58, 5.25, 6.14, 6.97, 4.47, 2.22, 5.53, 3.12, 5.38, 4.86, 4.07, 5.91]
+      }
+    };
+
+    const els = {
+      dimSelect: document.getElementById("dimSelect"),
+      signToggle: document.getElementById("signToggle"),
+      resetBtn: document.getElementById("resetBtn"),
+      vectorGrid: document.getElementById("vectorGrid"),
+      codebook: document.getElementById("codebook"),
+      boundaries: document.getElementById("boundaries"),
+      rotationNotes: document.getElementById("rotationNotes"),
+      flow: document.getElementById("flow"),
+      flowCanvas: document.getElementById("flowCanvas"),
+      ribbons: document.getElementById("ribbons"),
+      exactDot: document.getElementById("exactDot"),
+      tqScore: document.getElementById("tqScore"),
+      floatVScore: document.getElementById("floatVScore"),
+      absError: document.getElementById("absError"),
+      relError: document.getElementById("relError"),
+      rawP: document.getElementById("rawP"),
+      pathDelta: document.getElementById("pathDelta"),
+      pathNote: document.getElementById("pathNote"),
+      dimBadge: document.getElementById("dimBadge"),
+      matrixBadge: document.getElementById("matrixBadge"),
+      hadamardMatrix: document.getElementById("hadamardMatrix"),
+      matrixText: document.getElementById("matrixText"),
+      inputU: document.getElementById("inputU"),
+      inputV: document.getElementById("inputV"),
+      rotU: document.getElementById("rotU"),
+      rotV: document.getElementById("rotV"),
+      signVector: document.getElementById("signVector"),
+      stdU: document.getElementById("stdU"),
+      queryRotAgain: document.getElementById("queryRotAgain"),
+      uNormText: document.getElementById("uNormText"),
+      vMaxText: document.getElementById("vMaxText"),
+      uInt8: document.getElementById("uInt8"),
+      vInt8: document.getElementById("vInt8"),
+      bucketText: document.getElementById("bucketText"),
+      vScaleText: document.getElementById("vScaleText"),
+      dotValue: document.getElementById("dotValue"),
+      scaleValues: document.getElementById("scaleValues"),
+      altValues: document.getElementById("altValues"),
+      altText: document.getElementById("altText"),
+      altScoreValue: document.getElementById("altScoreValue"),
+      altScoreText: document.getElementById("altScoreText"),
+      scoreValue: document.getElementById("scoreValue"),
+      accuracyBar: document.getElementById("accuracyBar"),
+      scoreText: document.getElementById("scoreText"),
+      stateRows: document.getElementById("stateRows"),
+      scaleRows: document.getElementById("scaleRows")
+    };
+
+    let state = {
+      d: 4,
+      useSigns: false,
+      U: DEFAULTS[4].U.slice(),
+      V: DEFAULTS[4].V.slice()
+    };
+
+    const inputRefs = {
+      U: [],
+      V: []
+    };
+
+    function fmt(value, digits = 4) {
+      if (!Number.isFinite(value)) return "0";
+      if (Math.abs(value) >= 10000 || (Math.abs(value) > 0 && Math.abs(value) < 0.0001)) {
+        return value.toExponential(2);
+      }
+      const text = value.toFixed(digits);
+      if (digits === 0) return text;
+      return text.replace(/\.?0+$/, "");
+    }
+
+    function norm(vec) {
+      const n = Math.sqrt(vec.reduce((acc, x) => acc + x * x, 0));
+      return Math.max(n, 1e-12);
+    }
+
+    function dot(a, b) {
+      return a.reduce((acc, x, i) => acc + x * b[i], 0);
+    }
+
+    function hadamard(vec) {
+      const out = vec.slice();
+      const n = out.length;
+      for (let size = 1; size < n; size <<= 1) {
+        for (let start = 0; start < n; start += size << 1) {
+          for (let i = 0; i < size; i++) {
+            const a = out[start + i];
+            const b = out[start + size + i];
+            out[start + i] = a + b;
+            out[start + size + i] = a - b;
+          }
+        }
+      }
+      return out;
+    }
+
+    function hadamardMatrix(d) {
+      let matrix = [[1]];
+      while (matrix.length < d) {
+        const top = matrix.map(row => row.concat(row));
+        const bottom = matrix.map(row => row.concat(row.map(x => -x)));
+        matrix = top.concat(bottom);
+      }
+      return matrix;
+    }
+
+    function rotate(vec) {
+      const signs = state.useSigns ? SIGN_VECTORS_SEED_42[state.d] : Array(state.d).fill(1);
+      return hadamard(vec.map((x, i) => x * signs[i]));
+    }
+
+    function bucketFor(value) {
+      const absValue = Math.abs(value);
+      let bucket = 0;
+      for (const boundary of POS_BOUNDARIES) {
+        if (absValue >= boundary) bucket += 1;
+      }
+      return bucket;
+    }
+
+    function roundHalfEven(value) {
+      const sign = Math.sign(value) || 1;
+      const absValue = Math.abs(value);
+      const floor = Math.floor(absValue);
+      const fraction = absValue - floor;
+      let rounded;
+      if (fraction > 0.5) {
+        rounded = floor + 1;
+      } else if (fraction < 0.5) {
+        rounded = floor;
+      } else {
+        rounded = floor % 2 === 0 ? floor : floor + 1;
+      }
+      return sign * rounded;
+    }
+
+    function calculate() {
+      const d = state.d;
+      const sqrtD = Math.sqrt(d);
+      const Norm_U = norm(state.U);
+      const Norm_V = norm(state.V);
+      const U_rot = rotate(state.U);
+      const V_rot = rotate(state.V);
+      const Norm_U_rot = norm(U_rot);
+      const U_std = U_rot.map(x => (x / Norm_U_rot) * sqrtD);
+      const buckets = U_std.map(bucketFor);
+      const cbIndices = U_std.map((x, i) => buckets[i] + (x < 0 ? 8 : 0));
+      const U_int8 = cbIndices.map(i => INT8_CODEBOOK[i]);
+      const V_max = Math.max(1e-12, ...V_rot.map(x => Math.abs(x)));
+      const V_scale = 127 / V_max;
+      const V_int8 = V_rot.map(x => roundHalfEven(x * V_scale));
+      const products = U_int8.map((x, i) => x * V_int8[i]);
+      const P = products.reduce((acc, x) => acc + x, 0);
+      const pseudoSqrSum = buckets.reduce((acc, b) => acc + SQUARED_CENTROIDS_WITH_DEBIAS[b], 0);
+      const Scale_U = Norm_U / Math.sqrt(Math.max(pseudoSqrSum, 1e-12));
+      const vIntSqr = V_int8.reduce((acc, x) => acc + x * x, 0);
+      const Scale_V = Norm_V / Math.sqrt(Math.max(vIntSqr, 1e-12));
+      const score = P * Scale_U * Scale_V;
+      const Norm_V_rot = norm(V_rot);
+      const P_floatV = U_int8.reduce((acc, x, i) => acc + x * V_rot[i], 0);
+      const Scale_V_rot = Norm_V / Math.max(Norm_V_rot, 1e-12);
+      const scoreFloatV = P_floatV * Scale_U * Scale_V_rot;
+      const exact = dot(state.U, state.V);
+      return {
+        d,
+        sqrtD,
+        Norm_U,
+        Norm_V,
+        U_rot,
+        V_rot,
+        Norm_U_rot,
+        U_std,
+        buckets,
+        cbIndices,
+        U_int8,
+        V_max,
+        V_scale,
+        V_int8,
+        products,
+        P,
+        P_floatV,
+        pseudoSqrSum,
+        Scale_U,
+        vIntSqr,
+        Scale_V,
+        Norm_V_rot,
+        Scale_V_rot,
+        score,
+        scoreFloatV,
+        exact,
+        signs: state.useSigns ? SIGN_VECTORS_SEED_42[d] : Array(d).fill(1)
+      };
+    }
+
+    function chip(value, type = "", digits = 2, title = "") {
+      const div = document.createElement("div");
+      div.className = `chip ${type}`;
+      div.textContent = typeof value === "number" ? fmt(value, digits) : value;
+      div.title = title || div.textContent;
+      return div;
+    }
+
+    function renderChips(el, values, type, digits = 2) {
+      el.innerHTML = "";
+      el.style.setProperty("--dim", state.d);
+      values.forEach(value => el.appendChild(chip(value, type, digits)));
+    }
+
+    function renderInputs() {
+      els.vectorGrid.innerHTML = "";
+      els.vectorGrid.style.setProperty("--dim", state.d);
+      inputRefs.U = [];
+      inputRefs.V = [];
+      ["U", "V"].forEach(name => {
+        const row = document.createElement("div");
+        row.className = "vector-row";
+        row.style.setProperty("--dim", state.d);
+        const label = document.createElement("label");
+        label.textContent = name;
+        row.appendChild(label);
+        state[name].forEach((value, i) => {
+          const input = document.createElement("input");
+          input.className = "num";
+          input.type = "number";
+          input.step = "0.25";
+          input.value = value;
+          input.setAttribute("aria-label", `${name}${i}`);
+          const syncAndRender = () => {
+            syncStateFromInputs();
+            render();
+          };
+          input.addEventListener("input", syncAndRender);
+          input.addEventListener("change", syncAndRender);
+          input.addEventListener("keyup", syncAndRender);
+          inputRefs[name].push(input);
+          row.appendChild(input);
+        });
+        els.vectorGrid.appendChild(row);
+      });
+    }
+
+    function parseInputValue(rawValue, fallback) {
+      const value = rawValue.trim();
+      if (value === "" || value === "-" || value === "." || value === "-.") {
+        return fallback;
+      }
+      const next = Number(value);
+      return Number.isFinite(next) ? next : fallback;
+    }
+
+    function syncStateFromInputs() {
+      ["U", "V"].forEach(name => {
+        if (!inputRefs[name].length) return;
+        state[name] = inputRefs[name].map((input, i) => parseInputValue(input.value, state[name][i]));
+      });
+    }
+
+    function renderCodebook() {
+      els.codebook.innerHTML = "";
+      INT8_CODEBOOK.forEach((value, i) => {
+        const item = document.createElement("span");
+        item.className = value >= 0 ? "pos" : "neg";
+        item.textContent = `${i}: ${value}`;
+        els.codebook.appendChild(item);
+      });
+      els.boundaries.textContent = POS_BOUNDARIES.map(x => fmt(x, 4)).join(" | ");
+    }
+
+    function updateFlowScale() {
+      if (!els.flow) return;
+      const baseWidth = 1660;
+      const baseHeight = 760;
+      const availableWidth = els.flow.clientWidth;
+      const top = els.flow.getBoundingClientRect().top;
+      const viewportHeight = Math.max(360, window.innerHeight - top - 28);
+      if (!availableWidth) return;
+      const scale = Math.min(1, availableWidth / baseWidth, viewportHeight / baseHeight);
+      els.flow.style.setProperty("--flow-scale", String(scale));
+      els.flow.style.height = `${Math.max(360, baseHeight * scale)}px`;
+    }
+
+    function renderTables(data) {
+      els.stateRows.innerHTML = "";
+      for (let i = 0; i < data.d; i++) {
+        const altTerm = data.U_int8[i] * data.V_rot[i];
+        const tr = document.createElement("tr");
+        const cells = [
+          i,
+          fmt(state.U[i], 4),
+          fmt(state.V[i], 4),
+          fmt(data.U_rot[i], 4),
+          fmt(data.U_std[i], 4),
+          data.buckets[i],
+          data.U_int8[i],
+          data.V_int8[i],
+          data.products[i],
+          fmt(data.V_rot[i], 4),
+          fmt(altTerm, 4)
+        ];
+
+        cells.forEach((value, j) => {
+          const td = document.createElement(j === 0 ? "th" : "td");
+          if (j === 6 || j === 7) {
+            const pill = document.createElement("span");
+            pill.className = `pill ${Number(value) >= 0 ? "pos" : "neg"}`;
+            pill.textContent = value;
+            td.appendChild(pill);
+          } else {
+            td.textContent = value;
+          }
+          tr.appendChild(td);
+        });
+        els.stateRows.appendChild(tr);
+      }
+
+      const scaleRows = [
+        ["Norm_U", fmt(data.Norm_U, 6), "shared: original base norm"],
+        ["Norm_U_rot", fmt(data.Norm_U_rot, 6), "shared: used to standardize U"],
+        ["Pseudo_Sqr_Sum", fmt(data.pseudoSqrSum, 4), "shared: debiased centroid energy"],
+        ["Scale_U", fmt(data.Scale_U, 7), "shared by both reconstruction paths"],
+        ["Norm_V", fmt(data.Norm_V, 6), "shared: original query norm"],
+        ["", "", ""],
+        ["Main Path", "", "TurboQuant asymmetric path with int8 query"],
+        ["sum(V_int8^2)", fmt(data.vIntSqr, 4), "query integer energy"],
+        ["Scale_V", fmt(data.Scale_V, 7), "Norm_V / sqrt(sum(V_int8^2))"],
+        ["P", fmt(data.P, 0), "raw integer dot product"],
+        ["Final", fmt(data.score, 6), "P x Scale_U x Scale_V"],
+        ["", "", ""],
+        ["Float-V Path", "", "alternate path using rotated float V"],
+        ["Norm_V_rot", fmt(data.Norm_V_rot, 6), "rotated query norm"],
+        ["Scale_V_rot", fmt(data.Scale_V_rot, 7), "Norm_V / Norm_V_rot"],
+        ["P_floatV", fmt(data.P_floatV, 4), "mixed dot product with float V_rot"],
+        ["Final-V", fmt(data.scoreFloatV, 6), "P_floatV x Scale_U x Scale_V_rot"]
+      ];
+      els.scaleRows.innerHTML = "";
+      scaleRows.forEach(row => {
+        const tr = document.createElement("tr");
+        row.forEach((value, i) => {
+          const cell = document.createElement(i === 0 ? "th" : "td");
+          cell.textContent = value;
+          if (i === 2) cell.style.color = "var(--muted)";
+          if (row[0] === "" && i < 3) {
+            cell.style.background = "#fbfcff";
+            cell.style.borderTop = "0";
+            cell.style.padding = "4px 9px";
+          }
+          if ((row[0] === "Main Path" || row[0] === "Float-V Path") && i === 0) {
+            cell.style.color = "var(--ink)";
+          }
+        tr.appendChild(cell);
+        });
+        els.scaleRows.appendChild(tr);
+      });
+    }
+
+    function renderMatrix(data) {
+      const matrix = hadamardMatrix(data.d);
+      els.matrixBadge.textContent = `H${data.d}`;
+      els.matrixText.textContent = state.useSigns
+        ? `Rotation applies D first, then H${data.d}. The matrix shown here is the FWHT operator.`
+        : `For this view, U_rot = H${data.d} x U and V_rot = H${data.d} x V.`;
+      els.hadamardMatrix.innerHTML = "";
+      els.hadamardMatrix.style.gridTemplateColumns = `repeat(${data.d}, 18px)`;
+      matrix.forEach(row => {
+        row.forEach(value => {
+          const cell = document.createElement("div");
+          cell.className = `matrix-cell ${value > 0 ? "pos" : "neg"}`;
+          cell.textContent = value > 0 ? "+1" : "-1";
+          els.hadamardMatrix.appendChild(cell);
+        });
+      });
+    }
+
+    function ribbonPath(x1, y1, x2, y2, color, width, opacity = 0.42, dash = "") {
+      const cx1 = x1 + Math.max(70, (x2 - x1) * 0.42);
+      const cx2 = x2 - Math.max(70, (x2 - x1) * 0.42);
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", color);
+      path.setAttribute("stroke-width", width);
+      path.setAttribute("stroke-linecap", "round");
+      path.setAttribute("opacity", opacity);
+      if (dash) path.setAttribute("stroke-dasharray", dash);
+      return path;
+    }
+
+    function svgText(text, x, y, color) {
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.textContent = text;
+      label.setAttribute("x", x);
+      label.setAttribute("y", y);
+      label.setAttribute("fill", color);
+      label.setAttribute("font-size", "13");
+      label.setAttribute("font-weight", "750");
+      label.setAttribute("letter-spacing", "0");
+      return label;
+    }
+
+    function svgLine(x1, y1, x2, y2, color, width, opacity = 0.35, dash = "") {
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", x1);
+      line.setAttribute("y1", y1);
+      line.setAttribute("x2", x2);
+      line.setAttribute("y2", y2);
+      line.setAttribute("stroke", color);
+      line.setAttribute("stroke-width", width);
+      line.setAttribute("stroke-linecap", "round");
+      line.setAttribute("opacity", opacity);
+      if (dash) line.setAttribute("stroke-dasharray", dash);
+      return line;
+    }
+
+    function renderRibbons(data) {
+      els.ribbons.innerHTML = "";
+      const normWidthU = Math.min(52, 14 + data.Norm_U * 4.2);
+      const normWidthV = Math.min(52, 14 + data.Norm_V * 3.2);
+      const intWidthU = Math.min(46, 10 + Math.sqrt(data.U_int8.reduce((a, x) => a + x * x, 0)) / 11);
+      const intWidthV = Math.min(46, 10 + Math.sqrt(data.vIntSqr) / 12);
+      const finalWidth = Math.min(58, Math.max(14, 16 + Math.abs(data.score) * 1.6));
+      const altWidth = Math.min(42, Math.max(12, 12 + Math.abs(data.scoreFloatV) * 1.4));
+
+      [
+        ribbonPath(194, 182, 252, 182, "#5d8df6", normWidthU, 0.28),
+        ribbonPath(194, 248, 252, 248, "#7657d8", normWidthV, 0.26),
+        ribbonPath(416, 182, 442, 182, "#5d8df6", 20, 0.24),
+        ribbonPath(416, 248, 442, 248, "#7657d8", 20, 0.22),
+        ribbonPath(652, 182, 664, 118, "#5d8df6", 24, 0.23),
+        ribbonPath(652, 248, 664, 395, "#7657d8", 24, 0.22),
+        ribbonPath(874, 118, 888, 118, "#2bbf7f", 22, 0.30),
+        ribbonPath(874, 395, 888, 395, "#ef776d", 22, 0.28),
+        ribbonPath(1098, 118, 1100, 226, "#2bbf7f", intWidthU, 0.22),
+        ribbonPath(1098, 395, 1100, 258, "#ef776d", intWidthV, 0.21),
+        ribbonPath(1248, 244, 1294, 244, "#7657d8", Math.min(42, 12 + Math.abs(data.P) / 300), 0.30),
+        ribbonPath(1442, 244, 1470, 244, "#7657d8", finalWidth, 0.30)
+      ].forEach(path => els.ribbons.appendChild(path));
+
+      [
+        ribbonPath(234, 248, 360, 562, "#3f8f7b", 12, 0.18, "10 8"),
+        ribbonPath(604, 562, 1470, 562, "#3f8f7b", altWidth, 0.24, "10 8")
+      ].forEach(path => els.ribbons.appendChild(path));
+
+      for (let i = 0; i < data.d; i++) {
+        const offset = (i - (data.d - 1) / 2) * Math.max(6, 46 / data.d);
+        const product = Math.abs(data.products[i]);
+        const width = Math.min(8, 2 + product / Math.max(1, Math.max(...data.products.map(Math.abs))) * 5);
+        els.ribbons.appendChild(ribbonPath(1064, 120 + offset, 1100, 226 + offset * 0.36, data.products[i] >= 0 ? "#2bbf7f" : "#ef776d", width, 0.48));
+        els.ribbons.appendChild(ribbonPath(1064, 397 + offset, 1100, 258 + offset * 0.36, data.products[i] >= 0 ? "#2bbf7f" : "#ef776d", width, 0.38));
+      }
+
+      els.ribbons.appendChild(svgText("multiply by H", 296, 83, "#8b96a8"));
+      els.ribbons.appendChild(svgText("rotate", 518, 107, "#8b96a8"));
+      els.ribbons.appendChild(svgText("base: normalize + codebook", 712, 38, "#2a9d6b"));
+      els.ribbons.appendChild(svgText("query: max-abs int8 scale", 712, 535, "#9e342d"));
+      els.ribbons.appendChild(svgText("SIMD-friendly integer dot", 1082, 172, "#8b96a8"));
+      els.ribbons.appendChild(svgText("separate float-V branch", 340, 706, "#3f8f7b"));
+      els.ribbons.appendChild(svgText("alt output aligned with main output", 1068, 706, "#3f8f7b"));
+      els.ribbons.appendChild(svgText("reconstruct magnitude", 1278, 172, "#7657d8"));
+    }
+
+    function render() {
+      syncStateFromInputs();
+      document.documentElement.style.setProperty("--dim", state.d);
+      const data = calculate();
+      const absError = Math.abs(data.score - data.exact);
+      const relError = Math.abs(data.exact) > 1e-12 ? absError / Math.abs(data.exact) : 0;
+      const accuracy = Math.max(0, Math.min(100, 100 - relError * 100));
+      const pathDelta = Math.abs(data.score - data.scoreFloatV);
+
+      els.dimBadge.textContent = state.d;
+      if (els.signToggle) {
+        els.signToggle.setAttribute("aria-checked", String(state.useSigns));
+      }
+      els.exactDot.textContent = fmt(data.exact, 4);
+      els.tqScore.textContent = fmt(data.score, 4);
+      els.floatVScore.textContent = fmt(data.scoreFloatV, 4);
+      els.pathDelta.textContent = fmt(pathDelta, 4);
+      els.pathNote.textContent = pathDelta < 0.001 ? "same to 1e-3" : `${fmt(pathDelta, 4)} away from int8-V path`;
+      els.absError.textContent = fmt(absError, 4);
+      els.relError.textContent = `${fmt(relError * 100, 2)} percent relative`;
+      els.rawP.textContent = fmt(data.P, 0);
+
+      renderChips(els.inputU, state.U, "u", 2);
+      renderChips(els.inputV, state.V, "v", 2);
+      renderChips(els.rotU, data.U_rot, "u", 2);
+      renderChips(els.rotV, data.V_rot, "v", 2);
+      renderChips(els.stdU, data.U_std, "good", 3);
+      renderChips(els.queryRotAgain, data.V_rot, "v", 2);
+      renderChips(els.uInt8, data.U_int8, "good", 0);
+      renderChips(els.vInt8, data.V_int8, "hot", 0);
+
+      els.signVector.textContent = state.useSigns
+        ? `D = [${data.signs.join(", ")}], seed 42`
+        : "D disabled, matching the documented 4D worked example.";
+      els.uNormText.textContent = `U_std = U_rot / ${fmt(data.Norm_U_rot, 4)} x ${fmt(data.sqrtD, 4)}`;
+      els.vMaxText.textContent = `max(abs(V_rot)) = ${fmt(data.V_max, 4)}`;
+      els.bucketText.textContent = `buckets = [${data.buckets.join(", ")}], indices = [${data.cbIndices.join(", ")}]`;
+      els.vScaleText.textContent = `V_scale = 127 / ${fmt(data.V_max, 4)} = ${fmt(data.V_scale, 4)}`;
+      els.dotValue.textContent = fmt(data.P, 0);
+      els.scaleValues.innerHTML = "";
+      [
+        ["Scale_U", data.Scale_U],
+        ["Scale_V", data.Scale_V]
+      ].forEach(([label, value]) => {
+        const div = document.createElement("div");
+        div.className = "chip warn";
+        div.textContent = `${label}: ${fmt(value, 6)}`;
+        els.scaleValues.appendChild(div);
+      });
+      els.altValues.innerHTML = "";
+      [
+        [`dot(U_int8,V_rot): ${fmt(data.P_floatV, 4)}`],
+        [`Scale_V_rot: ${fmt(data.Scale_V_rot, 6)}`],
+        [`Score_alt: ${fmt(data.scoreFloatV, 4)}`]
+      ].forEach(([text]) => {
+        const div = document.createElement("div");
+        div.className = "chip good long";
+        div.textContent = text;
+        els.altValues.appendChild(div);
+      });
+      els.altText.textContent = `Score_alt = dot(U_int8, V_rot) x Scale_U x (Norm_V / Norm_V_rot)`;
+      els.altScoreValue.textContent = fmt(data.scoreFloatV, 4);
+      els.altScoreText.textContent = `Alt path output. Delta vs main ${fmt(pathDelta, 4)}.`;
+      els.scoreValue.textContent = fmt(data.score, 4);
+      els.accuracyBar.style.width = `${accuracy}%`;
+      els.scoreText.textContent = `Exact ${fmt(data.exact, 4)}, error ${fmt(absError, 4)}. Alt path delta ${fmt(pathDelta, 4)}.`;
+      els.rotationNotes.textContent = state.d === 4 && !state.useSigns
+        ? "Current defaults reproduce the docstring path: U_rot = H4 x U and V_rot = H4 x V."
+        : "This page uses the same unnormalized FWHT as HadamardRotation for power-of-two dimensions. The optional D vector uses seed 42 signs.";
+
+      renderMatrix(data);
+      renderTables(data);
+      renderRibbons(data);
+      updateFlowScale();
+    }
+
+    function setDimension(d) {
+      state.d = d;
+      state.U = DEFAULTS[d].U.slice();
+      state.V = DEFAULTS[d].V.slice();
+      renderInputs();
+      render();
+    }
+
+    els.dimSelect.addEventListener("change", event => {
+      setDimension(Number(event.target.value));
+    });
+
+    els.signToggle.addEventListener("click", () => {
+      state.useSigns = !state.useSigns;
+      render();
+    });
+
+    els.resetBtn.addEventListener("click", () => {
+      state.useSigns = false;
+      els.dimSelect.value = "4";
+      setDimension(4);
+    });
+
+    window.addEventListener("resize", updateFlowScale);
+    if (typeof ResizeObserver !== "undefined") {
+      new ResizeObserver(updateFlowScale).observe(els.flow);
+    }
+
+    renderCodebook();
+    renderInputs();
+    render();
+  </script>
+</body>
+</html>
