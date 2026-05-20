@@ -6,89 +6,103 @@
   <title>TurboQuant Explainer</title>
   <style>
     :root {
-      --ink: #1d2433;
-      --muted: #687386;
-      --line: #dfe5ef;
+      /* Surface */
+      --ink: #0f172a;
+      --ink-soft: #334155;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --line: #e2e8f0;
+      --line-soft: #eef2f7;
+      --bg: #f7f8fb;
       --panel: #ffffff;
-      --soft: #f6f8fc;
-      --blue: #5d8df6;
-      --blue-weak: #dbe7ff;
-      --green: #2bbf7f;
-      --green-weak: #dff7ec;
-      --coral: #ef776d;
-      --coral-weak: #ffe1de;
-      --violet: #7657d8;
-      --violet-weak: #e8e2ff;
-      --amber: #d79d17;
-      --amber-weak: #fff1ca;
-      --shadow: 0 14px 40px rgba(35, 52, 84, 0.10);
-      --radius: 8px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+      /* Roles */
+      --u: #2563eb;        /* base U — blue */
+      --u-bg: #dbeafe;
+      --u-border: #bfdbfe;
+      --v: #7c3aed;        /* query V — violet */
+      --v-bg: #ede9fe;
+      --v-border: #d8caff;
+      --int: #047857;      /* integer space — green */
+      --int-bg: #d1fae5;
+      --int-border: #a7f3d0;
+      --warn: #b45309;     /* scales/amber */
+      --warn-bg: #fef3c7;
+      --warn-border: #fde68a;
+      --err: #b91c1c;      /* error */
+      --err-bg: #fee2e2;
+      --err-border: #fecaca;
+
+      --radius: 10px;
+      --radius-sm: 6px;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
-      background: var(--soft);
+      background: var(--bg);
+      font-feature-settings: "ss01" on, "cv11" on;
     }
 
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+
+    button, input, select, textarea { font: inherit; color: inherit; }
+
+    code, .mono {
+      font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     }
 
-    body {
-      margin: 0;
-      min-width: 1180px;
-      background:
-        linear-gradient(180deg, #ffffff 0%, #f7f9fd 42%, #f2f5fb 100%);
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
+    /* ---------- Top bar ---------- */
     .topbar {
-      height: 56px;
-      display: grid;
-      grid-template-columns: auto minmax(420px, 1fr) auto auto auto;
-      gap: 12px;
-      align-items: center;
-      padding: 0 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(14px);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 24px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
     }
 
     .brand {
-      font-weight: 850;
-      letter-spacing: 0;
-      color: #526cf0;
-      text-transform: uppercase;
-      font-size: 20px;
-      white-space: nowrap;
-    }
-
-    .formula {
-      height: 36px;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: var(--radius);
       display: flex;
       align-items: center;
-      padding: 0 14px;
-      min-width: 0;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-dot {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--u), var(--v));
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    .brand-sub {
       color: var(--muted);
-      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
+      font-weight: 500;
+      font-size: 13px;
+      border-left: 1px solid var(--line);
+      padding-left: 14px;
+      margin-left: 4px;
     }
 
-    .formula strong {
-      color: var(--violet);
-      margin: 0 4px;
-    }
-
-    .top-control {
+    .controls {
+      margin-left: auto;
       display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .control {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       color: var(--muted);
@@ -96,763 +110,1151 @@
       white-space: nowrap;
     }
 
-    .select,
-    .btn {
+    .select, .btn {
       border: 1px solid var(--line);
       background: #fff;
       color: var(--ink);
-      border-radius: var(--radius);
-      height: 36px;
+      border-radius: 8px;
+      height: 34px;
       padding: 0 12px;
-      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
+      box-shadow: var(--shadow-sm);
+      transition: border-color 120ms ease, background 120ms ease;
     }
 
-    .btn {
-      cursor: pointer;
-      font-weight: 650;
-    }
-
-    .btn:hover {
-      border-color: #bac7da;
-      background: #f9fbff;
-    }
+    .btn { cursor: pointer; font-weight: 600; }
+    .btn:hover { border-color: #c7d0dc; background: #fafbff; }
 
     .switch {
-      width: 44px;
-      height: 24px;
+      width: 38px;
+      height: 22px;
       border-radius: 999px;
-      border: 1px solid #c9d3e4;
-      background: #e9eef7;
+      border: 1px solid #cbd5e1;
+      background: #e5e9f0;
       position: relative;
       padding: 0;
       cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease;
     }
-
     .switch::after {
       content: "";
       position: absolute;
-      width: 18px;
-      height: 18px;
-      top: 2px;
-      left: 3px;
+      width: 16px; height: 16px;
+      top: 2px; left: 2px;
       border-radius: 50%;
       background: #fff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-      transition: transform 150ms ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      transition: transform 140ms ease;
+    }
+    .switch[aria-checked="true"] { background: var(--ink); border-color: var(--ink); }
+    .switch[aria-checked="true"]::after { transform: translateX(16px); }
+
+    /* ---------- Hero metrics ---------- */
+    .hero {
+      padding: 22px 24px 18px;
+      background:
+        radial-gradient(1200px 200px at 10% 0%, rgba(37, 99, 235, 0.06), transparent 70%),
+        radial-gradient(1200px 200px at 90% 0%, rgba(124, 58, 237, 0.06), transparent 70%),
+        #fff;
+      border-bottom: 1px solid var(--line);
     }
 
-    .switch[aria-checked="true"] {
-      background: var(--violet);
-      border-color: var(--violet);
+    .hero-formula {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
+    }
+    .hero-formula b { color: var(--ink); font-weight: 700; }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
     }
 
-    .switch[aria-checked="true"]::after {
-      transform: translateX(18px);
+    .hero-metric {
+      padding: 16px 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
     }
+    .hero-metric::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent, var(--muted-2));
+    }
+    .hero-metric.exact { --accent: var(--u); }
+    .hero-metric.score { --accent: var(--v); }
+    .hero-metric.err { --accent: var(--err); }
+    .hero-metric.ablation { --accent: var(--int); display: none; }
+    .hero-metric.ablation.on { display: block; }
 
+    .hero-label {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-value {
+      margin-top: 8px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .hero-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .hero-metrics.with-ablation { grid-template-columns: repeat(4, 1fr); }
+
+    /* ---------- Layout ---------- */
     .app {
       display: grid;
-      grid-template-columns: 312px 1fr;
-      min-height: calc(100vh - 56px);
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      padding: 20px 24px 28px;
+      align-items: start;
     }
 
-    .sidebar {
-      border-right: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.74);
-      padding: 18px;
-      overflow: auto;
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      .hero-metrics, .hero-metrics.with-ablation { grid-template-columns: repeat(2, 1fr); }
     }
 
-    .workspace {
-      padding: 18px 22px 28px;
-      overflow: auto;
-    }
-
-    .panel,
-    .metric,
-    .stage,
-    .data-table {
+    /* ---------- Panels (sidebar) ---------- */
+    .panel {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      box-shadow: 0 1px 2px rgba(30, 42, 66, 0.03);
-    }
-
-    .panel {
+      box-shadow: var(--shadow-sm);
+      padding: 14px 16px;
       margin-bottom: 14px;
-      padding: 14px;
     }
-
-    .panel h2,
-    .table-title {
-      font-size: 13px;
-      text-transform: uppercase;
+    .panel h2 {
+      font-size: 11.5px;
+      font-weight: 750;
+      color: var(--muted);
       letter-spacing: 0.08em;
+      text-transform: uppercase;
       margin: 0 0 12px;
-      color: #8b96a8;
     }
-
-    .small {
+    .panel .hint {
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.55;
+      margin: 10px 0 0;
+    }
+    .panel .hint code, .accordion code {
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
     }
 
-    .vector-grid {
+    /* Inputs */
+    .vec-row {
       display: grid;
+      grid-template-columns: 24px 1fr;
       gap: 8px;
-    }
-
-    .vector-row {
-      display: grid;
-      grid-template-columns: 30px repeat(var(--dim), 40px);
-      gap: 4px;
       align-items: center;
-      overflow-x: auto;
-      padding-bottom: 2px;
+      margin-bottom: 8px;
     }
-
-    .vector-row label {
-      font-weight: 780;
-      color: var(--muted);
-    }
-
-    .num {
-      width: 40px;
-      min-width: 0;
-      border: 1px solid #cad4e3;
-      background: #fff;
+    .vec-row:last-child { margin-bottom: 0; }
+    .vec-row > .vec-label {
+      font-weight: 800;
       color: var(--ink);
-      border-radius: 6px;
-      height: 34px;
-      padding: 0 5px;
-      text-align: right;
-      font-size: 14px;
+      font-size: 13px;
     }
-
-    .num:focus {
-      outline: 2px solid rgba(93, 141, 246, 0.18);
-      border-color: var(--blue);
+    .vec-row.u > .vec-label { color: var(--u); }
+    .vec-row.v > .vec-label { color: var(--v); }
+    .vec-inputs {
+      display: grid;
+      grid-template-columns: repeat(var(--dim, 4), 1fr);
+      gap: 4px;
     }
-
-    .num::-webkit-outer-spin-button,
-    .num::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
     .num {
-      appearance: textfield;
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 6px;
+      height: 30px;
+      padding: 0 4px;
+      text-align: right;
+      font-size: 12.5px;
+      font-variant-numeric: tabular-nums;
     }
+    .num:focus {
+      outline: 2px solid rgba(37, 99, 235, 0.18);
+      border-color: var(--u);
+    }
+    .num::-webkit-outer-spin-button,
+    .num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .num { appearance: textfield; }
 
-    .codebook {
+    /* Codebook */
+    .codebook-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      gap: 4px;
     }
-
-    .codebook span {
-      border-radius: 6px;
-      padding: 7px 5px;
+    .cb-cell {
+      border-radius: 5px;
+      padding: 5px 4px;
       text-align: center;
-      font-size: 12px;
-      font-weight: 750;
-      background: var(--soft);
-      color: var(--muted);
-      border: 1px solid #e2e8f1;
-    }
-
-    .codebook .pos {
-      color: #146d4c;
-      background: var(--green-weak);
-    }
-
-    .codebook .neg {
-      color: #a43c35;
-      background: var(--coral-weak);
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .metric {
-      padding: 12px 13px;
-      min-height: 72px;
-    }
-
-    .metric .label {
-      color: #8b96a8;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-    }
-
-    .metric .value {
-      margin-top: 7px;
-      font-size: 23px;
-      font-weight: 800;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .metric .note {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .flow-wrap {
-      position: relative;
-      --flow-scale: 1;
-      width: 100%;
-      height: calc(760px * var(--flow-scale));
-      min-height: 360px;
-      max-height: calc(100vh - 168px);
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .flow-canvas {
-      position: relative;
-      width: 1660px;
-      height: 760px;
-      transform-origin: top left;
-      transform: scale(var(--flow-scale));
-      background:
-        linear-gradient(90deg, rgba(93, 141, 246, 0.045), transparent 21%, rgba(43, 191, 127, 0.055) 45%, transparent 69%, rgba(118, 87, 216, 0.06)),
-        #fff;
-    }
-
-    .flow-canvas::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(90deg, rgba(60, 76, 104, 0.06) 1px, transparent 1px);
-      background-size: 88px 100%;
-      pointer-events: none;
-    }
-
-    #ribbons {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .stage {
-      position: absolute;
-      z-index: 2;
-      width: 170px;
-      min-height: 108px;
-      padding: 12px;
-      box-shadow: 0 8px 22px rgba(35, 52, 84, 0.08);
-    }
-
-    .stage.wide {
-      width: 210px;
-    }
-
-    .stage.slim {
-      width: 148px;
-    }
-
-    .stage .kicker {
       font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9aa5b6;
-      margin-bottom: 4px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .cb-cell.pos { color: #065f46; background: #ecfdf5; border-color: #a7f3d0; }
+    .cb-cell.neg { color: #991b1b; background: #fef2f2; border-color: #fecaca; }
+
+    .boundaries-list {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      line-height: 1.6;
+      word-break: break-all;
     }
 
-    .stage .title {
-      font-weight: 820;
-      margin-bottom: 9px;
+    /* Concepts accordion */
+    .accordion details {
+      border-top: 1px solid var(--line-soft);
+      padding: 10px 0;
+    }
+    .accordion details:first-of-type { border-top: 0; padding-top: 0; }
+    .accordion details summary {
+      cursor: pointer;
+      list-style: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--ink);
+      padding: 4px 0;
     }
-
-    .stage .title span:last-child {
-      font-weight: 750;
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary::after {
+      content: "+";
       color: var(--muted);
-      font-size: 12px;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+      transition: transform 150ms ease;
     }
+    .accordion details[open] summary::after { content: "−"; }
+    .accordion details p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+    .accordion details p + p { margin-top: 6px; }
 
-    .node-input { left: 24px; top: 120px; }
-    .node-matrix { left: 252px; top: 94px; width: 164px; min-height: 210px; }
-    .node-rotation { left: 442px; top: 118px; }
-    .node-base { left: 664px; top: 56px; }
-    .node-query { left: 664px; top: 333px; }
-    .node-codebook { left: 888px; top: 56px; }
-    .node-linear { left: 888px; top: 333px; }
-    .node-dot { left: 1100px; top: 184px; }
-    .node-scale { left: 1294px; top: 184px; }
-    .node-alt { left: 360px; top: 486px; width: 244px; min-height: 150px; }
-    .node-alt-score { left: 1470px; top: 486px; }
-    .node-score { left: 1470px; top: 184px; }
-
-    .chip-list {
+    /* ---------- Pipeline ---------- */
+    .pipeline {
       display: grid;
-      gap: 5px;
+      gap: 14px;
     }
 
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 16px;
+      position: relative;
+    }
+
+    .step + .step::before {
+      content: "";
+      position: absolute;
+      left: 38px;
+      top: -10px;
+      width: 1px;
+      height: 10px;
+      background: var(--line);
+    }
+
+    .step-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .step-body { min-width: 0; }
+    .step-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .step h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 750;
+      letter-spacing: -0.005em;
+    }
+    .step .step-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--line-soft);
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .step .why {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 4px 0 0;
+    }
+    .step .formula {
+      margin-top: 10px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      color: var(--ink-soft);
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .step-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .step-row-label {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Chips */
     .chips {
       display: flex;
       gap: 4px;
+      flex-wrap: nowrap;
       overflow-x: auto;
       padding-bottom: 2px;
     }
+    .chips::-webkit-scrollbar { height: 6px; }
+    .chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
     .chip {
-      flex: 0 0 43px;
-      border-radius: 5px;
-      padding: 5px 4px;
-      min-width: 0;
+      flex: 1 1 0;
+      min-width: 44px;
+      border-radius: 6px;
+      padding: 6px 4px;
       text-align: center;
       font-variant-numeric: tabular-nums;
-      font-size: 11px;
-      font-weight: 750;
-      color: #243045;
-      background: #eef2f7;
-      border: 1px solid rgba(90, 106, 130, 0.16);
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
       white-space: nowrap;
     }
+    .chip.u { background: var(--u-bg); color: #1e3a8a; border-color: var(--u-border); }
+    .chip.v { background: var(--v-bg); color: #5b21b6; border-color: var(--v-border); }
+    .chip.int { background: var(--int-bg); color: #065f46; border-color: var(--int-border); }
+    .chip.scale { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
 
-    .chip.u { background: var(--blue-weak); color: #214eaa; }
-    .chip.v { background: var(--violet-weak); color: #4d35a5; }
-    .chip.good { background: var(--green-weak); color: #146d4c; }
-    .chip.hot { background: var(--coral-weak); color: #9e342d; }
-    .chip.warn { background: var(--amber-weak); color: #8a5d00; }
-
-    .chip.long {
-      flex: 1 1 auto;
-      min-width: 0;
-      text-align: left;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-
-    .matrix-frame {
-      border: 1px solid #d7deea;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #fbfcff, #f2f5fb);
-      padding: 8px;
-      overflow: auto;
-      max-height: 130px;
-    }
-
-    .matrix-grid {
+    /* Step 3 — split into U side and V side */
+    .step.split .step-body {
       display: grid;
-      gap: 3px;
-      min-width: max-content;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
     }
+    @media (max-width: 720px) {
+      .step.split .step-body { grid-template-columns: 1fr; }
+    }
+    .substep {
+      border-left: 3px solid var(--u);
+      padding-left: 14px;
+    }
+    .substep.v { border-left-color: var(--v); }
+    .substep h4 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--u);
+      letter-spacing: -0.005em;
+    }
+    .substep.v h4 { color: var(--v); }
 
-    .matrix-cell {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
+    /* Step 4 — integer dot */
+    .big-number {
+      font-size: 38px;
       font-weight: 800;
-      border: 1px solid rgba(90, 106, 130, 0.16);
-      background: #ffffff;
-      color: #4f5f77;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-top: 10px;
     }
 
-    .matrix-cell.pos {
-      background: var(--blue-weak);
-      color: #214eaa;
-    }
-
-    .matrix-cell.neg {
-      background: var(--coral-weak);
-      color: #9e342d;
-    }
-
-    .mini-formula {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed #dbe2ed;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .big-score {
-      color: var(--violet);
-      font-size: 30px;
-      font-weight: 850;
-      line-height: 1;
-      margin: 4px 0 7px;
-    }
-
-    .bar {
-      height: 8px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #edf1f6;
-      margin-top: 8px;
-    }
-
-    .bar span {
-      display: block;
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--blue), var(--green), var(--violet));
-      transition: width 120ms ease;
-    }
-
-    .tables {
+    /* Step 5 — reconstruct */
+    .reconstruct-row {
       display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 14px;
-      min-width: 1040px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .scale-card {
+      padding: 10px 12px;
+      border: 1px solid var(--warn-border);
+      background: var(--warn-bg);
+      border-radius: 8px;
+    }
+    .scale-card .scale-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--warn);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .scale-card .scale-value {
+      display: block;
+      margin-top: 4px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #78350f;
+    }
+    .score-card {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #f5f3ff, #e0e7ff);
+      border: 1px solid #c7d2fe;
+      border-radius: 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    .score-card .score-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5b21b6;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .score-card .score-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
     }
 
-    .data-table {
+    /* Ablation note (in step) */
+    .ablation-note {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #ecfeff;
+      border: 1px dashed #a5f3fc;
+      border-radius: 8px;
+      color: #155e75;
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+    .ablation-note.on { display: block; }
+    .ablation-note b { color: #0e7490; }
+
+    /* Hadamard preview */
+    .hadamard-preview {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: #fcfcfe;
+    }
+    .hadamard-preview .grid {
+      display: grid;
+      gap: 2px;
+    }
+    .hcell {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .hcell.pos { background: var(--u-bg); color: var(--u); }
+    .hcell.neg { background: var(--err-bg); color: var(--err); }
+    .hadamard-preview .desc {
+      flex: 1;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ---------- Details (per-dim + scale reconstruction) ---------- */
+    .details-wrap {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 1100px) {
+      .details-wrap { grid-template-columns: 1fr; }
+    }
+
+    .table-panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
       overflow: hidden;
     }
-
-    .data-table .table-title {
-      padding: 12px 14px 0;
+    .table-head {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .table-head h2 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 750;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .table-head .tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--line-soft);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .table-head .tag.on {
+      color: #155e75;
+      background: #cffafe;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
-    }
-
-    th,
-    td {
-      border-top: 1px solid #edf1f6;
-      padding: 8px 9px;
-      text-align: right;
       font-variant-numeric: tabular-nums;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-top: 1px solid var(--line-soft);
+      text-align: right;
       white-space: nowrap;
     }
-
-    th:first-child,
-    td:first-child {
-      text-align: left;
+    thead th {
       color: var(--muted);
-      font-weight: 750;
+      font-weight: 700;
+      background: #fafbff;
+      border-top: 0;
     }
-
-    th {
-      color: #8b96a8;
-      font-weight: 750;
-      background: #fbfcff;
-    }
+    th:first-child, td:first-child { text-align: left; color: var(--ink-soft); font-weight: 650; }
+    th.section { background: #f1f5f9; color: var(--muted); padding: 6px 10px; }
+    th.grp { text-align: center; background: #f8fafc; font-weight: 750; }
+    .ablation-col { display: none; }
+    body.show-ablation .ablation-col { display: table-cell; }
 
     .pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      padding: 3px 7px;
+      padding: 2px 8px;
       min-width: 30px;
       font-size: 11px;
       font-weight: 800;
-      border: 1px solid rgba(90, 106, 130, 0.18);
+      font-variant-numeric: tabular-nums;
+    }
+    .pill.pos { background: #d1fae5; color: #065f46; }
+    .pill.neg { background: #fee2e2; color: #991b1b; }
+
+    /* Scale reconstruction table */
+    .recon-table .section-row td {
+      background: #f8fafc;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 6px 10px;
+    }
+    .recon-table .ablation-row { display: none; }
+    body.show-ablation .recon-table .ablation-row { display: table-row; }
+
+    /* ---------- Bucket ruler (Step 3a) ---------- */
+    .bucket-ruler-wrap {
+      margin-top: 14px;
+      padding: 12px 14px 10px;
+      background: linear-gradient(180deg, #fafbff 0%, #f3f6fc 100%);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .bucket-ruler-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .bucket-ruler-title b { color: var(--ink); font-weight: 800; }
+
+    .bucket-ruler {
+      position: relative;
+      margin-bottom: 4px;
     }
 
-    .pill.pos {
-      background: var(--green-weak);
-      color: #146d4c;
+    .bucket-markers {
+      position: relative;
+      height: 56px;
     }
 
-    .pill.neg {
-      background: var(--coral-weak);
-      color: #9e342d;
-    }
-
-    .legend {
+    .bucket-marker {
+      position: absolute;
+      bottom: 0;
+      transform: translateX(-50%);
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .legend span {
-      display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      gap: 5px;
+      pointer-events: auto;
+    }
+    .bucket-marker .pill {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+      white-space: nowrap;
+    }
+    .bucket-marker.pos .pill { background: var(--u); }
+    .bucket-marker.neg .pill { background: var(--err); }
+    .bucket-marker .stem {
+      width: 0;
+      height: 8px;
+      border-left: 1.5px dashed rgba(15, 23, 42, 0.35);
+      margin-top: 2px;
     }
 
-    .swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      display: inline-block;
+    .bucket-bar {
+      position: relative;
+      display: flex;
+      height: 32px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #c7d3e6;
+      background: #fff;
+    }
+    .bucket-band {
+      position: relative;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #1e3a8a;
+      border-right: 1px solid rgba(255, 255, 255, 0.85);
+      min-width: 0;
+      overflow: hidden;
+    }
+    .bucket-band:last-child { border-right: 0; }
+    /* Band fills — lighter at low magnitude, darker at high, all in U-blue family */
+    .bucket-band.b0 { background: #eaf2fe; }
+    .bucket-band.b1 { background: #d6e4fc; }
+    .bucket-band.b2 { background: #c0d4fa; }
+    .bucket-band.b3 { background: #a9c4f7; }
+    .bucket-band.b4 { background: #8fb1f4; }
+    .bucket-band.b5 { background: #759ef0; }
+    .bucket-band.b6 { background: #5a8aec; color: #fff; }
+    .bucket-band.b7 { background: #3f76e8; color: #fff; }
+    .bucket-band .centroid {
+      line-height: 1;
+      text-align: center;
+    }
+    .bucket-band .centroid small {
+      display: block;
+      font-size: 8.5px;
+      font-weight: 700;
+      opacity: 0.75;
+      margin-bottom: 2px;
+      letter-spacing: 0.05em;
+    }
+    .bucket-band.hit::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--ink);
+      border-radius: 5px;
+      pointer-events: none;
+      box-sizing: border-box;
     }
 
-    .callout {
-      padding: 10px;
-      border-radius: var(--radius);
-      background: #f7f9fd;
-      border: 1px solid #e5ebf4;
+    .bucket-axis {
+      position: relative;
+      height: 18px;
+      margin-top: 2px;
+      font-size: 9.5px;
       color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
+      font-variant-numeric: tabular-nums;
+    }
+    .axis-tick {
+      position: absolute;
+      transform: translateX(-50%);
+      top: 6px;
+      white-space: nowrap;
+    }
+    .axis-tick::before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 4px;
+      background: #94a3b8;
+      margin: 0 auto -1px;
+    }
+    .ruler-legend {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .ruler-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .ruler-legend i {
+      width: 10px; height: 10px; border-radius: 3px;
     }
 
-    @media (max-width: 1260px) {
-      body {
-        min-width: 1040px;
-      }
+    /* Mapping table */
+    .mapping-table {
+      width: 100%;
+      margin-top: 12px;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .mapping-table th, .mapping-table td {
+      padding: 7px 10px;
+      border-top: 1px solid var(--line-soft);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .mapping-table thead th {
+      background: #f8fafc;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-top: 0;
+    }
+    .mapping-table td.col-i { color: var(--muted); font-weight: 700; }
+    .mapping-table td.arrow { color: var(--muted-2); padding: 7px 2px; }
+    .mapping-table td.sign-pos {
+      color: var(--int);
+      font-weight: 800;
+    }
+    .mapping-table td.sign-neg {
+      color: var(--err);
+      font-weight: 800;
+    }
+    .mapping-table td.bucket-cell {
+      background: rgba(37, 99, 235, 0.06);
+      font-weight: 700;
+      color: var(--u);
+    }
+    .mapping-table td.idx-cell {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+    .mapping-table td.result {
+      font-weight: 800;
+      color: #065f46;
+      background: #ecfdf5;
+    }
 
-      .app {
-        grid-template-columns: 280px 1fr;
-      }
-
-      .tables {
-        min-width: 980px;
-      }
+    /* Small visual helper */
+    .kbd {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">TurboQuant Explainer</div>
-    <div class="formula">Score = <strong>P</strong> x <strong>Scale_U</strong> x <strong>Scale_V</strong></div>
-    <label class="top-control">
-      Dimension
-      <select id="dimSelect" class="select" aria-label="Dimension">
-        <option value="4" selected>4D worked example</option>
-        <option value="8">8D power-of-two</option>
-        <option value="16">16D power-of-two</option>
-      </select>
-    </label>
-    <div class="top-control">
-      Random signs D
-      <button id="signToggle" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle random sign rotation"></button>
+    <div class="brand">
+      <span class="brand-dot"></span>
+      TurboQuant
+      <span class="brand-sub">4-bit asymmetric quantization &middot; interactive explainer</span>
     </div>
-    <button id="resetBtn" class="btn" type="button">Reset</button>
+    <div class="controls">
+      <label class="control">
+        Dimension
+        <select id="dimSelect" class="select" aria-label="Dimension">
+          <option value="4" selected>4D worked example</option>
+          <option value="8">8D</option>
+          <option value="16">16D</option>
+        </select>
+      </label>
+      <label class="control">
+        Random signs D
+        <button id="signToggle" class="switch" type="button" role="switch" aria-checked="false"></button>
+      </label>
+      <label class="control">
+        Show ablation
+        <button id="ablationToggle" class="switch" type="button" role="switch" aria-checked="false"></button>
+      </label>
+      <button id="resetBtn" class="btn" type="button">Reset</button>
+    </div>
   </header>
+
+  <section class="hero">
+    <div class="hero-formula">
+      <span>Score</span> = <b>P</b> &times; <b>Scale<sub>U</sub></b> &times; <b>Scale<sub>V</sub></b>
+    </div>
+    <div id="heroMetrics" class="hero-metrics">
+      <div class="hero-metric exact">
+        <div class="hero-label">Exact U &middot; V</div>
+        <div class="hero-value" id="exactDot">0</div>
+        <div class="hero-note">ground-truth float dot product</div>
+      </div>
+      <div class="hero-metric score">
+        <div class="hero-label">TurboQuant Score</div>
+        <div class="hero-value" id="tqScore">0</div>
+        <div class="hero-note">rebuilt from the integer path</div>
+      </div>
+      <div class="hero-metric err">
+        <div class="hero-label">Error</div>
+        <div class="hero-value" id="absError">0</div>
+        <div class="hero-note" id="relError">0% relative</div>
+      </div>
+      <div class="hero-metric ablation" id="ablationCard">
+        <div class="hero-label">Float-V Ablation</div>
+        <div class="hero-value" id="floatVScore">0</div>
+        <div class="hero-note">explainer-only &middot; skip V int8</div>
+      </div>
+    </div>
+  </section>
 
   <main class="app">
     <aside class="sidebar">
       <section class="panel">
-        <h2>Input Vectors</h2>
-        <div id="vectorGrid" class="vector-grid"></div>
-        <p class="small">Edit any value. The rotation, codebook buckets, integer dot product, scales, and reconstructed score update immediately.</p>
+        <h2>Input vectors</h2>
+        <div id="vectorGrid"></div>
+        <p class="hint">Edit any value. <code>U</code> is the stored base embedding, <code>V</code> is the query. The pipeline updates live.</p>
       </section>
 
       <section class="panel">
-        <h2>4-bit Codebook</h2>
-        <div id="codebook" class="codebook"></div>
-        <div class="legend">
-          <span><i class="swatch" style="background: var(--green-weak); border: 1px solid #bbe8d0;"></i> positive half</span>
-          <span><i class="swatch" style="background: var(--coral-weak); border: 1px solid #f4c3bf;"></i> negative half</span>
-        </div>
+        <h2>4-bit codebook (16 levels)</h2>
+        <div id="codebook" class="codebook-grid"></div>
+        <p class="hint">Indices 0&ndash;7 are positive centroids, 8&ndash;15 mirror them. Derived offline via Lloyd&ndash;Max / k-means on <code>N(0,1)</code> using analytical PDF/CDF centroids.</p>
       </section>
 
       <section class="panel">
-        <h2>Bucket Boundaries</h2>
-        <div id="boundaries" class="callout"></div>
+        <h2>Bucket boundaries</h2>
+        <div id="boundaries" class="boundaries-list"></div>
+        <p class="hint">An input falls into bucket <code>k</code> when <code>|U_std|</code> lies between boundary <code>k-1</code> and <code>k</code>. The sign bit picks the positive or negative half of the codebook.</p>
       </section>
 
-      <section class="panel">
-        <h2>Rotation Notes</h2>
-        <div id="rotationNotes" class="callout"></div>
+      <section class="panel accordion">
+        <h2>Concepts</h2>
+
+        <details open>
+          <summary>Why asymmetric?</summary>
+          <p><b>Base U</b> is quantized <i>once, offline</i> — storage-bound, so we compress to 4 bits (held in <code>int8</code> for SIMD).</p>
+          <p><b>Query V</b> is quantized <i>per call, online</i> — accuracy-bound, so we widen to 8 bits with a dynamic linear scale (<code>max(|V_rot|) → 127</code>).</p>
+          <p>Both sides share the same integer dot product <code>P</code>.</p>
+        </details>
+
+        <details>
+          <summary>Why rotate?</summary>
+          <p>The FWHT (with optional sign vector <code>D</code>) mixes every input dimension into every output. By the Central Limit Theorem, <code>U_rot</code> ≈ a standard normal sample — exactly the distribution the codebook was trained on.</p>
+          <p>This shrinks tail clipping and makes the 4-bit lookup near-optimal in squared error.</p>
+        </details>
+
+        <details>
+          <summary>Beyond power-of-two d</summary>
+          <p><code>HadamardRotation</code> decomposes <code>d = r · 2<sup>k</sup></code>:</p>
+          <p>1. FWHT each of the <code>r</code> blocks of length <code>2<sup>k</sup></code>.<br>2. Mix the <code>r</code> sub-spaces with a random <code>r × r</code> orthogonal matrix <code>M</code> (QR on a Gaussian draw, seed 42).</p>
+          <p>This page only renders the power-of-two case so the math stays inspectable by hand.</p>
+        </details>
+
+        <details>
+          <summary>Debias factor</summary>
+          <p>Mapping a Gaussian sample to its centroid <code>q</code> systematically <i>underestimates</i> energy. TurboQuant corrects this analytically:</p>
+          <p><code>debias = √E[q²] / E[z·q]</code></p>
+          <p>The correction is baked into <code>SQUARED_CENTROIDS_WITH_DEBIAS</code> so that <code>Scale_U</code> rebuilds the true <code>‖U‖</code> magnitude.</p>
+        </details>
+
+        <details>
+          <summary>Implementation notes</summary>
+          <p>The reference <code>turboquant.py</code> processes batches: <code>U: (N, d)</code>, <code>V: (Q, d)</code>, output <code>scores: (Q, N)</code>.</p>
+          <p>Optional native kernels in <code>fast_hadamard.cc</code> (<code>cpp_fwht_inplace</code>, <code>cpp_compute_dot_products</code>) accelerate FWHT and the int8 dot. NumPy is the fallback.</p>
+        </details>
       </section>
     </aside>
 
-    <section class="workspace">
-      <div class="metrics">
-        <div class="metric">
-          <div class="label">Exact U dot V</div>
-          <div id="exactDot" class="value">0</div>
-          <div class="note">original float vectors</div>
+    <section>
+      <div class="pipeline">
+
+        <!-- Step 1: Rotate -->
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-head">
+              <h3>Rotate into a quantization-friendly space</h3>
+              <span class="step-tag">shared</span>
+            </div>
+            <p class="why">Apply <code class="mono">y = M · H · D · x</code>. For power-of-two <code>d</code> this reduces to an unnormalized FWHT (optionally preceded by random sign flips <code>D</code>). The result behaves like <code>N(0, 1)</code>, which is what the codebook expects.</p>
+            <div class="step-row">
+              <div class="step-row-label">U_rot</div>
+              <div id="rotU" class="chips"></div>
+            </div>
+            <div class="step-row">
+              <div class="step-row-label">V_rot</div>
+              <div id="rotV" class="chips"></div>
+            </div>
+            <div class="formula" id="signVector"></div>
+            <div class="hadamard-preview">
+              <div id="hadamardMatrix" class="grid" aria-label="Hadamard matrix"></div>
+              <div class="desc" id="matrixText"></div>
+            </div>
+          </div>
         </div>
-        <div class="metric">
-          <div class="label">TurboQuant Score</div>
-          <div id="tqScore" class="value">0</div>
-          <div class="note">integer path rebuilt</div>
+
+        <!-- Step 2: Standardize U -->
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-head">
+              <h3>Standardize U onto the unit sphere &times; √d</h3>
+              <span class="step-tag" style="color: var(--u); background: var(--u-bg);">U only</span>
+            </div>
+            <p class="why">Normalize <code>U_rot</code> to unit length, then rescale by <code>√d</code> so each entry sits roughly in <code>[-3, 3]</code> — the support of the codebook. <code>V</code> stays unstandardized.</p>
+            <div class="step-row">
+              <div class="step-row-label">U_std</div>
+              <div id="stdU" class="chips"></div>
+            </div>
+            <div class="formula" id="uNormText"></div>
+          </div>
         </div>
-        <div class="metric">
-          <div class="label">Float-V Score</div>
-          <div id="floatVScore" class="value">0</div>
-          <div class="note">rotate V, no V quantization</div>
+
+        <!-- Step 3: Quantize (split) -->
+        <div class="step split">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="substep">
+              <h4>3a · Base U → 4-bit codebook</h4>
+              <p class="why">For each <code>|U_std[i]|</code> find its bucket (0&ndash;7) via the seven boundaries, then add 8 if negative. The 16-entry int8 codebook holds the centroid for each (bucket, sign) pair.</p>
+
+              <div class="bucket-ruler-wrap">
+                <div class="bucket-ruler-title">Each <b>|U_std[i]|</b> lands in a band → the centroid below the bar is the magnitude of <b>U_int8</b></div>
+                <div class="bucket-ruler">
+                  <div id="bucketMarkers" class="bucket-markers"></div>
+                  <div id="bucketBar" class="bucket-bar"></div>
+                </div>
+                <div id="bucketAxis" class="bucket-axis"></div>
+                <div class="ruler-legend">
+                  <span><i style="background: var(--u);"></i> positive U_std → centroid kept as-is</span>
+                  <span><i style="background: var(--err);"></i> negative U_std → centroid negated (idx += 8)</span>
+                </div>
+              </div>
+
+              <table class="mapping-table" id="mappingTable">
+                <thead>
+                  <tr>
+                    <th>i</th>
+                    <th>U_std</th>
+                    <th></th>
+                    <th>|U_std|</th>
+                    <th>Bucket</th>
+                    <th>Sign</th>
+                    <th>Idx</th>
+                    <th></th>
+                    <th>U_int8</th>
+                  </tr>
+                </thead>
+                <tbody id="mappingRows"></tbody>
+              </table>
+
+              <div class="step-row">
+                <div class="step-row-label">U_int8</div>
+                <div id="uInt8" class="chips"></div>
+              </div>
+              <div class="formula" id="bucketText"></div>
+            </div>
+            <div class="substep v">
+              <h4>3b · Query V → 8-bit linear scale</h4>
+              <p class="why">Pick <code>V_scale = 127 / max(|V_rot|)</code>, multiply, and round (banker's). Keeps the full int8 dynamic range for the query.</p>
+              <div class="step-row">
+                <div class="step-row-label">V_int8</div>
+                <div id="vInt8" class="chips"></div>
+              </div>
+              <div class="formula" id="vScaleText"></div>
+            </div>
+          </div>
         </div>
-        <div class="metric">
-          <div class="label">Raw Int Dot P</div>
-          <div id="rawP" class="value">0</div>
-          <div class="note">sum(U_int8 x V_int8)</div>
+
+        <!-- Step 4: Integer dot -->
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-head">
+              <h3>Integer dot product P</h3>
+              <span class="step-tag" style="color: var(--int); background: var(--int-bg);">SIMD-friendly</span>
+            </div>
+            <p class="why">The throughput-critical step: a vectorized int8 multiply-accumulate. This is what TurboQuant gives you over float-dot — orders of magnitude more dot-products per second.</p>
+            <div class="big-number" id="dotValue">0</div>
+            <div class="formula">P = Σᵢ U_int8[i] &middot; V_int8[i]</div>
+            <div class="ablation-note" id="ablationNoteDot">
+              <b>Ablation:</b> using float <code>V_rot</code> instead of <code>V_int8</code>, the dot is
+              <span id="pFloatV" class="mono"></span>. Difference vs main: <span id="pDelta" class="mono"></span>.
+            </div>
+          </div>
         </div>
-        <div class="metric">
-          <div class="label">Path Delta</div>
-          <div id="pathDelta" class="value">0</div>
-          <div id="pathNote" class="note">compare both score paths</div>
-        </div>
-        <div class="metric">
-          <div class="label">Absolute Error</div>
-          <div id="absError" class="value">0</div>
-          <div id="relError" class="note">0 percent relative</div>
+
+        <!-- Step 5: Reconstruct -->
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-head">
+              <h3>Reconstruct the floating-point score</h3>
+              <span class="step-tag" style="color: var(--warn); background: var(--warn-bg);">analytical</span>
+            </div>
+            <p class="why"><code>Scale_U</code> uses the <i>debiased</i> centroid-energy table so it rebuilds the true <code>‖U‖</code>. <code>Scale_V</code> simply undoes the dynamic linear scale on <code>V</code>.</p>
+            <div class="reconstruct-row">
+              <div class="scale-card">
+                <span class="scale-label">Scale<sub>U</sub></span>
+                <span class="scale-value" id="scaleU">0</span>
+              </div>
+              <div class="scale-card">
+                <span class="scale-label">Scale<sub>V</sub></span>
+                <span class="scale-value" id="scaleV">0</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div>
+                <div class="score-label">Score</div>
+                <div class="formula" style="margin-top: 6px; background: transparent; border: 0; padding: 0;">P × Scale<sub>U</sub> × Scale<sub>V</sub></div>
+              </div>
+              <div class="score-value" id="scoreValue">0</div>
+            </div>
+            <div class="ablation-note" id="ablationNoteScore">
+              <b>Float-V score:</b> <span id="altScoreInline" class="mono"></span>
+              &nbsp;·&nbsp; delta vs main: <span id="altDelta" class="mono"></span>
+              (explainer-only ablation)
+            </div>
+          </div>
         </div>
       </div>
 
-      <div id="flow" class="flow-wrap" aria-label="TurboQuant flow diagram">
-        <div id="flowCanvas" class="flow-canvas">
-        <svg id="ribbons" viewBox="0 0 1660 760" preserveAspectRatio="none" aria-hidden="true"></svg>
-
-        <div class="stage wide node-input">
-          <div class="kicker">Original space</div>
-          <div class="title"><span>Input U and V</span><span>d=<b id="dimBadge">4</b></span></div>
-          <div class="chip-list">
-            <div id="inputU" class="chips"></div>
-            <div id="inputV" class="chips"></div>
+      <div class="details-wrap">
+        <div class="table-panel">
+          <div class="table-head">
+            <h2>Per-dimension trace</h2>
+            <span class="tag" id="ablationTag">Ablation hidden</span>
           </div>
-          <div class="mini-formula">Norms are captured before quantization.</div>
-        </div>
-
-        <div class="stage node-matrix">
-          <div class="kicker">Operator</div>
-          <div class="title"><span>Hadamard matrix</span><span id="matrixBadge">H4</span></div>
-          <div class="matrix-frame">
-            <div id="hadamardMatrix" class="matrix-grid"></div>
-          </div>
-          <div id="matrixText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage wide node-rotation">
-          <div class="kicker">Step 1</div>
-          <div class="title"><span>D then FWHT</span><span>H</span></div>
-          <div class="chip-list">
-            <div id="rotU" class="chips"></div>
-            <div id="rotV" class="chips"></div>
-          </div>
-          <div id="signVector" class="mini-formula"></div>
-        </div>
-
-        <div class="stage wide node-base">
-          <div class="kicker">Base branch</div>
-          <div class="title"><span>Standardize U</span><span>sqrt(d)</span></div>
-          <div id="stdU" class="chips"></div>
-          <div id="uNormText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage wide node-query">
-          <div class="kicker">Query branch</div>
-          <div class="title"><span>Keep V_rot</span><span>dynamic</span></div>
-          <div id="queryRotAgain" class="chips"></div>
-          <div id="vMaxText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage wide node-codebook">
-          <div class="kicker">Step 2A</div>
-          <div class="title"><span>4-bit U lookup</span><span>16 levels</span></div>
-          <div id="uInt8" class="chips"></div>
-          <div id="bucketText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage wide node-linear">
-          <div class="kicker">Step 2B</div>
-          <div class="title"><span>8-bit V scale</span><span>max->127</span></div>
-          <div id="vInt8" class="chips"></div>
-          <div id="vScaleText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage slim node-dot">
-          <div class="kicker">Step 3</div>
-          <div class="title"><span>Integer dot</span></div>
-          <div id="dotValue" class="big-score"></div>
-          <div class="mini-formula">P = sum(U_int8 x V_int8)</div>
-        </div>
-
-        <div class="stage slim node-scale">
-          <div class="kicker">Step 4</div>
-          <div class="title"><span>Re-scale</span></div>
-          <div id="scaleValues" class="chip-list"></div>
-          <div class="mini-formula">Base uses debiased centroid energy.</div>
-        </div>
-
-        <div class="stage node-alt">
-          <div class="kicker">Alt path</div>
-          <div class="title"><span>Float V_rot</span><span>no int8</span></div>
-          <div id="altValues" class="chip-list"></div>
-          <div id="altText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage slim node-alt-score">
-          <div class="kicker">Alt Output</div>
-          <div class="title"><span>Score_alt</span></div>
-          <div id="altScoreValue" class="big-score"></div>
-          <div id="altScoreText" class="mini-formula"></div>
-        </div>
-
-        <div class="stage slim node-score">
-          <div class="kicker">Output</div>
-          <div class="title"><span>Score</span></div>
-          <div id="scoreValue" class="big-score"></div>
-          <div class="bar"><span id="accuracyBar"></span></div>
-          <div id="scoreText" class="mini-formula"></div>
-        </div>
-        </div>
-      </div>
-
-      <div class="tables">
-        <section class="data-table">
-          <div class="table-title">Per-dimension State</div>
           <table>
             <thead>
               <tr>
-                <th colspan="7">Shared State</th>
-                <th colspan="2">Main Path</th>
-                <th colspan="2">Float-V Path</th>
+                <th colspan="6">Main path (turboquant.py)</th>
+                <th class="ablation-col" colspan="2">Ablation</th>
               </tr>
               <tr>
                 <th>i</th>
                 <th>U</th>
                 <th>V</th>
-                <th>U_rot</th>
                 <th>U_std</th>
-                <th>Bucket</th>
                 <th>U_int8</th>
                 <th>V_int8</th>
-                <th>U_int8*V_int8</th>
-                <th>V_rot</th>
-                <th>U_int8*V_rot</th>
+                <th class="ablation-col">V_rot</th>
+                <th class="ablation-col">U_int8&middot;V_rot</th>
               </tr>
             </thead>
             <tbody id="stateRows"></tbody>
           </table>
-        </section>
+        </div>
 
-        <section class="data-table">
-          <div class="table-title">Scale Reconstruction</div>
-          <table>
+        <div class="table-panel">
+          <div class="table-head">
+            <h2>Scale reconstruction</h2>
+          </div>
+          <table class="recon-table">
             <tbody id="scaleRows"></tbody>
           </table>
-        </section>
+        </div>
       </div>
     </section>
   </main>
 
   <script>
+    // ---------- Constants (must match turboquant.py) ----------
     const INT8_CODEBOOK = [6, 18, 31, 44, 58, 75, 96, 127, -6, -18, -31, -44, -58, -75, -96, -127];
     const POS_BOUNDARIES = [0.2582925, 0.5225402, 0.799742, 1.0995197, 1.4373973, 1.8437953, 2.4010493];
     const SQUARED_CENTROIDS_WITH_DEBIAS = [35.64, 323.14, 941.89, 1918.14, 3370.57, 5613.62, 9187.76, 16052.2];
+
+    // np.random.RandomState(42).choice([-1, 1], size=d) — verified against numpy
     const SIGN_VECTORS_SEED_42 = {
       2: [-1, 1],
       4: [-1, 1, -1, -1],
@@ -861,81 +1263,69 @@
     };
 
     const DEFAULTS = {
-      4: {
-        U: [2, 4, -2, 0],
-        V: [7, -1, 0, 1]
-      },
-      8: {
-        U: [5.83, 5.19, 5.41, 2.71, 7.48, 5.23, 4.42, 8.04],
-        V: [4.93, 2.82, 4.39, 1.57, 6.57, 4.38, 3.89, 6.61]
-      },
-      16: {
-        U: [4.79, 5.41, 6.11, 4.34, 6.14, 4.88, 4.56, 5.43, 5.29, 4.8, 6.17, 5.22, 7.51, 4.13, 3.98, 6.5],
-        V: [6.6, 7.06, 6.41, 4.42, 3.58, 5.25, 6.14, 6.97, 4.47, 2.22, 5.53, 3.12, 5.38, 4.86, 4.07, 5.91]
-      }
+      4:  { U: [2, 4, -2, 0],                                       V: [7, -1, 0, 1] },
+      8:  { U: [5.83, 5.19, 5.41, 2.71, 7.48, 5.23, 4.42, 8.04],    V: [4.93, 2.82, 4.39, 1.57, 6.57, 4.38, 3.89, 6.61] },
+      16: { U: [4.79, 5.41, 6.11, 4.34, 6.14, 4.88, 4.56, 5.43, 5.29, 4.8, 6.17, 5.22, 7.51, 4.13, 3.98, 6.5],
+            V: [6.6, 7.06, 6.41, 4.42, 3.58, 5.25, 6.14, 6.97, 4.47, 2.22, 5.53, 3.12, 5.38, 4.86, 4.07, 5.91] }
     };
 
+    // ---------- DOM ----------
     const els = {
       dimSelect: document.getElementById("dimSelect"),
       signToggle: document.getElementById("signToggle"),
+      ablationToggle: document.getElementById("ablationToggle"),
       resetBtn: document.getElementById("resetBtn"),
       vectorGrid: document.getElementById("vectorGrid"),
       codebook: document.getElementById("codebook"),
       boundaries: document.getElementById("boundaries"),
-      rotationNotes: document.getElementById("rotationNotes"),
-      flow: document.getElementById("flow"),
-      flowCanvas: document.getElementById("flowCanvas"),
-      ribbons: document.getElementById("ribbons"),
+      heroMetrics: document.getElementById("heroMetrics"),
+      ablationCard: document.getElementById("ablationCard"),
       exactDot: document.getElementById("exactDot"),
       tqScore: document.getElementById("tqScore"),
       floatVScore: document.getElementById("floatVScore"),
       absError: document.getElementById("absError"),
       relError: document.getElementById("relError"),
-      rawP: document.getElementById("rawP"),
-      pathDelta: document.getElementById("pathDelta"),
-      pathNote: document.getElementById("pathNote"),
-      dimBadge: document.getElementById("dimBadge"),
-      matrixBadge: document.getElementById("matrixBadge"),
-      hadamardMatrix: document.getElementById("hadamardMatrix"),
-      matrixText: document.getElementById("matrixText"),
-      inputU: document.getElementById("inputU"),
-      inputV: document.getElementById("inputV"),
       rotU: document.getElementById("rotU"),
       rotV: document.getElementById("rotV"),
       signVector: document.getElementById("signVector"),
+      hadamardMatrix: document.getElementById("hadamardMatrix"),
+      matrixText: document.getElementById("matrixText"),
       stdU: document.getElementById("stdU"),
-      queryRotAgain: document.getElementById("queryRotAgain"),
       uNormText: document.getElementById("uNormText"),
-      vMaxText: document.getElementById("vMaxText"),
       uInt8: document.getElementById("uInt8"),
-      vInt8: document.getElementById("vInt8"),
       bucketText: document.getElementById("bucketText"),
+      vInt8: document.getElementById("vInt8"),
       vScaleText: document.getElementById("vScaleText"),
       dotValue: document.getElementById("dotValue"),
-      scaleValues: document.getElementById("scaleValues"),
-      altValues: document.getElementById("altValues"),
-      altText: document.getElementById("altText"),
-      altScoreValue: document.getElementById("altScoreValue"),
-      altScoreText: document.getElementById("altScoreText"),
+      pFloatV: document.getElementById("pFloatV"),
+      pDelta: document.getElementById("pDelta"),
+      ablationNoteDot: document.getElementById("ablationNoteDot"),
+      ablationNoteScore: document.getElementById("ablationNoteScore"),
+      scaleU: document.getElementById("scaleU"),
+      scaleV: document.getElementById("scaleV"),
       scoreValue: document.getElementById("scoreValue"),
-      accuracyBar: document.getElementById("accuracyBar"),
-      scoreText: document.getElementById("scoreText"),
+      altScoreInline: document.getElementById("altScoreInline"),
+      altDelta: document.getElementById("altDelta"),
+      ablationTag: document.getElementById("ablationTag"),
       stateRows: document.getElementById("stateRows"),
-      scaleRows: document.getElementById("scaleRows")
+      scaleRows: document.getElementById("scaleRows"),
+      bucketMarkers: document.getElementById("bucketMarkers"),
+      bucketBar: document.getElementById("bucketBar"),
+      bucketAxis: document.getElementById("bucketAxis"),
+      mappingRows: document.getElementById("mappingRows")
     };
 
     let state = {
       d: 4,
       useSigns: false,
+      showAblation: false,
       U: DEFAULTS[4].U.slice(),
       V: DEFAULTS[4].V.slice()
     };
 
-    const inputRefs = {
-      U: [],
-      V: []
-    };
+    const inputRefs = { U: [], V: [] };
 
+    // ---------- Math (preserved verbatim from previous implementation) ----------
     function fmt(value, digits = 4) {
       if (!Number.isFinite(value)) return "0";
       if (Math.abs(value) >= 10000 || (Math.abs(value) > 0 && Math.abs(value) < 0.0001)) {
@@ -1001,13 +1391,9 @@
       const floor = Math.floor(absValue);
       const fraction = absValue - floor;
       let rounded;
-      if (fraction > 0.5) {
-        rounded = floor + 1;
-      } else if (fraction < 0.5) {
-        rounded = floor;
-      } else {
-        rounded = floor % 2 === 0 ? floor : floor + 1;
-      }
+      if (fraction > 0.5) rounded = floor + 1;
+      else if (fraction < 0.5) rounded = floor;
+      else rounded = floor % 2 === 0 ? floor : floor + 1;
       return sign * rounded;
     }
 
@@ -1039,62 +1425,42 @@
       const scoreFloatV = P_floatV * Scale_U * Scale_V_rot;
       const exact = dot(state.U, state.V);
       return {
-        d,
-        sqrtD,
-        Norm_U,
-        Norm_V,
-        U_rot,
-        V_rot,
-        Norm_U_rot,
-        U_std,
-        buckets,
-        cbIndices,
-        U_int8,
-        V_max,
-        V_scale,
-        V_int8,
-        products,
-        P,
-        P_floatV,
-        pseudoSqrSum,
-        Scale_U,
-        vIntSqr,
-        Scale_V,
-        Norm_V_rot,
-        Scale_V_rot,
-        score,
-        scoreFloatV,
-        exact,
+        d, sqrtD, Norm_U, Norm_V, U_rot, V_rot, Norm_U_rot, U_std,
+        buckets, cbIndices, U_int8, V_max, V_scale, V_int8,
+        products, P, P_floatV, pseudoSqrSum, Scale_U, vIntSqr, Scale_V,
+        Norm_V_rot, Scale_V_rot, score, scoreFloatV, exact,
         signs: state.useSigns ? SIGN_VECTORS_SEED_42[d] : Array(d).fill(1)
       };
     }
 
-    function chip(value, type = "", digits = 2, title = "") {
+    // ---------- Rendering ----------
+    function chip(value, type = "", digits = 2) {
       const div = document.createElement("div");
       div.className = `chip ${type}`;
       div.textContent = typeof value === "number" ? fmt(value, digits) : value;
-      div.title = title || div.textContent;
+      div.title = div.textContent;
       return div;
     }
 
     function renderChips(el, values, type, digits = 2) {
       el.innerHTML = "";
-      el.style.setProperty("--dim", state.d);
       values.forEach(value => el.appendChild(chip(value, type, digits)));
     }
 
     function renderInputs() {
       els.vectorGrid.innerHTML = "";
-      els.vectorGrid.style.setProperty("--dim", state.d);
       inputRefs.U = [];
       inputRefs.V = [];
       ["U", "V"].forEach(name => {
         const row = document.createElement("div");
-        row.className = "vector-row";
-        row.style.setProperty("--dim", state.d);
-        const label = document.createElement("label");
+        row.className = `vec-row ${name.toLowerCase()}`;
+        const label = document.createElement("div");
+        label.className = "vec-label";
         label.textContent = name;
         row.appendChild(label);
+        const inputs = document.createElement("div");
+        inputs.className = "vec-inputs";
+        inputs.style.setProperty("--dim", state.d);
         state[name].forEach((value, i) => {
           const input = document.createElement("input");
           input.className = "num";
@@ -1102,25 +1468,20 @@
           input.step = "0.25";
           input.value = value;
           input.setAttribute("aria-label", `${name}${i}`);
-          const syncAndRender = () => {
-            syncStateFromInputs();
-            render();
-          };
-          input.addEventListener("input", syncAndRender);
-          input.addEventListener("change", syncAndRender);
-          input.addEventListener("keyup", syncAndRender);
+          const sync = () => { syncStateFromInputs(); render(); };
+          input.addEventListener("input", sync);
+          input.addEventListener("change", sync);
           inputRefs[name].push(input);
-          row.appendChild(input);
+          inputs.appendChild(input);
         });
+        row.appendChild(inputs);
         els.vectorGrid.appendChild(row);
       });
     }
 
     function parseInputValue(rawValue, fallback) {
       const value = rawValue.trim();
-      if (value === "" || value === "-" || value === "." || value === "-.") {
-        return fallback;
-      }
+      if (value === "" || value === "-" || value === "." || value === "-.") return fallback;
       const next = Number(value);
       return Number.isFinite(next) ? next : fallback;
     }
@@ -1136,281 +1497,268 @@
       els.codebook.innerHTML = "";
       INT8_CODEBOOK.forEach((value, i) => {
         const item = document.createElement("span");
-        item.className = value >= 0 ? "pos" : "neg";
+        item.className = `cb-cell ${value >= 0 ? "pos" : "neg"}`;
         item.textContent = `${i}: ${value}`;
         els.codebook.appendChild(item);
       });
-      els.boundaries.textContent = POS_BOUNDARIES.map(x => fmt(x, 4)).join(" | ");
+      els.boundaries.textContent = POS_BOUNDARIES.map(x => fmt(x, 4)).join("   ·   ");
     }
 
-    function updateFlowScale() {
-      if (!els.flow) return;
-      const baseWidth = 1660;
-      const baseHeight = 760;
-      const availableWidth = els.flow.clientWidth;
-      const top = els.flow.getBoundingClientRect().top;
-      const viewportHeight = Math.max(360, window.innerHeight - top - 28);
-      if (!availableWidth) return;
-      const scale = Math.min(1, availableWidth / baseWidth, viewportHeight / baseHeight);
-      els.flow.style.setProperty("--flow-scale", String(scale));
-      els.flow.style.height = `${Math.max(360, baseHeight * scale)}px`;
+    function renderBucketMapping(data) {
+      // Centroids for the 8 positive codebook entries (indices 0..7)
+      const CENTROIDS = INT8_CODEBOOK.slice(0, 8);
+      // Ruler max: leave a bit of room past the last boundary, but also extend
+      // if a value lands beyond it (e.g. higher d's standardized peak can spill).
+      const maxAbs = Math.max(0, ...data.U_std.map(Math.abs));
+      const RULER_MAX = Math.max(2.7, maxAbs + 0.25);
+      const bandEdges = [0, ...POS_BOUNDARIES, RULER_MAX];
+      const hits = new Set(data.buckets);
+
+      // ---- Bar with bucket bands ----
+      els.bucketBar.innerHTML = "";
+      for (let b = 0; b < 8; b++) {
+        const left = bandEdges[b];
+        const right = bandEdges[b + 1];
+        const widthPct = ((right - left) / RULER_MAX) * 100;
+        const band = document.createElement("div");
+        band.className = `bucket-band b${b}${hits.has(b) ? " hit" : ""}`;
+        band.style.width = `${widthPct}%`;
+        const label = document.createElement("div");
+        label.className = "centroid";
+        label.innerHTML = `<small>b${b}</small>±${CENTROIDS[b]}`;
+        band.appendChild(label);
+        band.title = b === 7
+          ? `bucket 7: |U_std| ≥ ${fmt(POS_BOUNDARIES[6], 4)} · centroid ±${CENTROIDS[b]}`
+          : `bucket ${b}: ${fmt(bandEdges[b], 4)} ≤ |U_std| < ${fmt(bandEdges[b+1], 4)} · centroid ±${CENTROIDS[b]}`;
+        els.bucketBar.appendChild(band);
+      }
+
+      // ---- Markers above bar (with simple stacking when overlapping) ----
+      els.bucketMarkers.innerHTML = "";
+      const positions = data.U_std.map((v, i) => ({
+        i,
+        v,
+        abs: Math.abs(v),
+        x: Math.min(Math.abs(v), RULER_MAX) / RULER_MAX * 100
+      }));
+      // Greedy level assignment: pick the lowest level with > minSep clearance.
+      const minSep = 4.5; // % horizontal clearance between markers in the same row
+      const levelLastX = []; // last x placed at each level
+      positions.forEach(p => {
+        let level = levelLastX.findIndex(x => p.x - x > minSep);
+        if (level === -1) {
+          level = levelLastX.length;
+          levelLastX.push(p.x);
+        } else {
+          levelLastX[level] = p.x;
+        }
+        p.level = level;
+      });
+      const maxLevel = Math.max(0, ...positions.map(p => p.level));
+      els.bucketMarkers.style.height = `${28 + maxLevel * 18}px`;
+
+      positions.forEach(p => {
+        const m = document.createElement("div");
+        m.className = `bucket-marker ${p.v >= 0 ? "pos" : "neg"}`;
+        m.style.left = `${p.x}%`;
+        m.style.bottom = `${p.level * 18}px`;
+        const sign = p.v >= 0 ? "+" : "−";
+        m.innerHTML = `<div class="pill">${sign}${p.i}</div><div class="stem"></div>`;
+        m.title = `dim ${p.i} · U_std=${fmt(p.v, 4)} · |·|=${fmt(p.abs, 4)} · bucket ${data.buckets[p.i]} · U_int8=${data.U_int8[p.i]}`;
+        els.bucketMarkers.appendChild(m);
+      });
+
+      // ---- Axis ticks (0 and the 7 boundaries) ----
+      els.bucketAxis.innerHTML = "";
+      const ticks = [0, ...POS_BOUNDARIES];
+      ticks.forEach(t => {
+        const xPct = (t / RULER_MAX) * 100;
+        const tick = document.createElement("div");
+        tick.className = "axis-tick";
+        tick.style.left = `${xPct}%`;
+        tick.textContent = fmt(t, t === 0 ? 0 : 3);
+        els.bucketAxis.appendChild(tick);
+      });
+
+      // ---- Per-dimension mapping table ----
+      els.mappingRows.innerHTML = "";
+      for (let i = 0; i < data.d; i++) {
+        const v = data.U_std[i];
+        const isPos = v >= 0;
+        const bucket = data.buckets[i];
+        const idx = data.cbIndices[i];
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="col-i">${i}</td>
+          <td>${fmt(v, 4)}</td>
+          <td class="arrow">|·|</td>
+          <td>${fmt(Math.abs(v), 4)}</td>
+          <td class="bucket-cell">b${bucket}</td>
+          <td class="${isPos ? "sign-pos" : "sign-neg"}">${isPos ? "+" : "−"}</td>
+          <td class="idx-cell">${idx}</td>
+          <td class="arrow">→</td>
+          <td class="result">${data.U_int8[i]}</td>
+        `;
+        els.mappingRows.appendChild(tr);
+      }
+    }
+
+    function renderMatrix(data) {
+      const matrix = hadamardMatrix(data.d);
+      els.matrixText.innerHTML = state.useSigns
+        ? `Rotation is <code>D</code> then <code>H${data.d}</code>. The grid shows the unnormalized FWHT operator.`
+        : `<code>U_rot = H${data.d} · U</code>, <code>V_rot = H${data.d} · V</code>. (Toggle <span class="kbd">Random signs D</span> to also apply sign flips.)`;
+      els.hadamardMatrix.innerHTML = "";
+      els.hadamardMatrix.style.gridTemplateColumns = `repeat(${data.d}, 14px)`;
+      matrix.forEach(row => row.forEach(value => {
+        const cell = document.createElement("div");
+        cell.className = `hcell ${value > 0 ? "pos" : "neg"}`;
+        cell.textContent = value > 0 ? "+" : "−";
+        els.hadamardMatrix.appendChild(cell);
+      }));
     }
 
     function renderTables(data) {
+      // Per-dim table
       els.stateRows.innerHTML = "";
       for (let i = 0; i < data.d; i++) {
         const altTerm = data.U_int8[i] * data.V_rot[i];
         const tr = document.createElement("tr");
         const cells = [
-          i,
-          fmt(state.U[i], 4),
-          fmt(state.V[i], 4),
-          fmt(data.U_rot[i], 4),
-          fmt(data.U_std[i], 4),
-          data.buckets[i],
-          data.U_int8[i],
-          data.V_int8[i],
-          data.products[i],
-          fmt(data.V_rot[i], 4),
-          fmt(altTerm, 4)
+          { v: i, type: "th" },
+          { v: fmt(state.U[i], 4) },
+          { v: fmt(state.V[i], 4) },
+          { v: fmt(data.U_std[i], 4) },
+          { v: data.U_int8[i], pill: true },
+          { v: data.V_int8[i], pill: true },
+          { v: fmt(data.V_rot[i], 4), ablation: true },
+          { v: fmt(altTerm, 4), ablation: true }
         ];
-
-        cells.forEach((value, j) => {
-          const td = document.createElement(j === 0 ? "th" : "td");
-          if (j === 6 || j === 7) {
+        cells.forEach(c => {
+          const el = document.createElement(c.type === "th" ? "th" : "td");
+          if (c.ablation) el.className = "ablation-col";
+          if (c.pill) {
             const pill = document.createElement("span");
-            pill.className = `pill ${Number(value) >= 0 ? "pos" : "neg"}`;
-            pill.textContent = value;
-            td.appendChild(pill);
+            pill.className = `pill ${Number(c.v) >= 0 ? "pos" : "neg"}`;
+            pill.textContent = c.v;
+            el.appendChild(pill);
           } else {
-            td.textContent = value;
+            el.textContent = c.v;
           }
-          tr.appendChild(td);
+          tr.appendChild(el);
         });
         els.stateRows.appendChild(tr);
       }
 
-      const scaleRows = [
-        ["Norm_U", fmt(data.Norm_U, 6), "shared: original base norm"],
-        ["Norm_U_rot", fmt(data.Norm_U_rot, 6), "shared: used to standardize U"],
-        ["Pseudo_Sqr_Sum", fmt(data.pseudoSqrSum, 4), "shared: debiased centroid energy"],
-        ["Scale_U", fmt(data.Scale_U, 7), "shared by both reconstruction paths"],
-        ["Norm_V", fmt(data.Norm_V, 6), "shared: original query norm"],
-        ["", "", ""],
-        ["Main Path", "", "TurboQuant asymmetric path with int8 query"],
-        ["sum(V_int8^2)", fmt(data.vIntSqr, 4), "query integer energy"],
-        ["Scale_V", fmt(data.Scale_V, 7), "Norm_V / sqrt(sum(V_int8^2))"],
-        ["P", fmt(data.P, 0), "raw integer dot product"],
-        ["Final", fmt(data.score, 6), "P x Scale_U x Scale_V"],
-        ["", "", ""],
-        ["Float-V Path", "", "alternate path using rotated float V"],
-        ["Norm_V_rot", fmt(data.Norm_V_rot, 6), "rotated query norm"],
-        ["Scale_V_rot", fmt(data.Scale_V_rot, 7), "Norm_V / Norm_V_rot"],
-        ["P_floatV", fmt(data.P_floatV, 4), "mixed dot product with float V_rot"],
-        ["Final-V", fmt(data.scoreFloatV, 6), "P_floatV x Scale_U x Scale_V_rot"]
+      // Scale reconstruction table
+      const rows = [
+        { kind: "section", label: "Shared" },
+        { label: "Norm_U", value: fmt(data.Norm_U, 6), note: "original base norm" },
+        { label: "Norm_V", value: fmt(data.Norm_V, 6), note: "original query norm" },
+        { label: "Norm_U_rot", value: fmt(data.Norm_U_rot, 6), note: "for standardizing U" },
+        { label: "Pseudo_Sqr_Sum", value: fmt(data.pseudoSqrSum, 4), note: "debiased centroid energy" },
+        { label: "Scale_U", value: fmt(data.Scale_U, 7), note: "Norm_U / √Pseudo_Sqr_Sum" },
+        { kind: "section", label: "Main path" },
+        { label: "Σ V_int8²", value: fmt(data.vIntSqr, 4), note: "int8 query energy" },
+        { label: "Scale_V", value: fmt(data.Scale_V, 7), note: "Norm_V / √Σ V_int8²" },
+        { label: "P", value: fmt(data.P, 0), note: "integer dot product" },
+        { label: "Score", value: fmt(data.score, 6), note: "P × Scale_U × Scale_V", emph: true },
+        { kind: "section", label: "Ablation (explainer-only)", ablation: true },
+        { label: "Norm_V_rot", value: fmt(data.Norm_V_rot, 6), note: "rotated query norm", ablation: true },
+        { label: "Scale_V_rot", value: fmt(data.Scale_V_rot, 7), note: "Norm_V / Norm_V_rot", ablation: true },
+        { label: "P_floatV", value: fmt(data.P_floatV, 4), note: "U_int8 · V_rot (float)", ablation: true },
+        { label: "Score (float V)", value: fmt(data.scoreFloatV, 6), note: "P_floatV × Scale_U × Scale_V_rot", ablation: true, emph: true }
       ];
+
       els.scaleRows.innerHTML = "";
-      scaleRows.forEach(row => {
+      rows.forEach(r => {
         const tr = document.createElement("tr");
-        row.forEach((value, i) => {
-          const cell = document.createElement(i === 0 ? "th" : "td");
-          cell.textContent = value;
-          if (i === 2) cell.style.color = "var(--muted)";
-          if (row[0] === "" && i < 3) {
-            cell.style.background = "#fbfcff";
-            cell.style.borderTop = "0";
-            cell.style.padding = "4px 9px";
-          }
-          if ((row[0] === "Main Path" || row[0] === "Float-V Path") && i === 0) {
-            cell.style.color = "var(--ink)";
-          }
-        tr.appendChild(cell);
-        });
+        if (r.kind === "section") {
+          tr.className = `section-row${r.ablation ? " ablation-row" : ""}`;
+          const td = document.createElement("td");
+          td.colSpan = 3;
+          td.textContent = r.label;
+          tr.appendChild(td);
+        } else {
+          if (r.ablation) tr.className = "ablation-row";
+          const th = document.createElement("th");
+          th.textContent = r.label;
+          if (r.emph) th.style.color = "var(--ink)";
+          const tdValue = document.createElement("td");
+          tdValue.textContent = r.value;
+          tdValue.style.fontFamily = "JetBrains Mono, ui-monospace, monospace";
+          tdValue.style.fontWeight = "700";
+          if (r.emph) tdValue.style.color = "var(--ink)";
+          const tdNote = document.createElement("td");
+          tdNote.textContent = r.note;
+          tdNote.style.color = "var(--muted)";
+          tdNote.style.textAlign = "left";
+          tr.appendChild(th);
+          tr.appendChild(tdValue);
+          tr.appendChild(tdNote);
+        }
         els.scaleRows.appendChild(tr);
       });
     }
 
-    function renderMatrix(data) {
-      const matrix = hadamardMatrix(data.d);
-      els.matrixBadge.textContent = `H${data.d}`;
-      els.matrixText.textContent = state.useSigns
-        ? `Rotation applies D first, then H${data.d}. The matrix shown here is the FWHT operator.`
-        : `For this view, U_rot = H${data.d} x U and V_rot = H${data.d} x V.`;
-      els.hadamardMatrix.innerHTML = "";
-      els.hadamardMatrix.style.gridTemplateColumns = `repeat(${data.d}, 18px)`;
-      matrix.forEach(row => {
-        row.forEach(value => {
-          const cell = document.createElement("div");
-          cell.className = `matrix-cell ${value > 0 ? "pos" : "neg"}`;
-          cell.textContent = value > 0 ? "+1" : "-1";
-          els.hadamardMatrix.appendChild(cell);
-        });
-      });
-    }
-
-    function ribbonPath(x1, y1, x2, y2, color, width, opacity = 0.42, dash = "") {
-      const cx1 = x1 + Math.max(70, (x2 - x1) * 0.42);
-      const cx2 = x2 - Math.max(70, (x2 - x1) * 0.42);
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
-      path.setAttribute("fill", "none");
-      path.setAttribute("stroke", color);
-      path.setAttribute("stroke-width", width);
-      path.setAttribute("stroke-linecap", "round");
-      path.setAttribute("opacity", opacity);
-      if (dash) path.setAttribute("stroke-dasharray", dash);
-      return path;
-    }
-
-    function svgText(text, x, y, color) {
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.textContent = text;
-      label.setAttribute("x", x);
-      label.setAttribute("y", y);
-      label.setAttribute("fill", color);
-      label.setAttribute("font-size", "13");
-      label.setAttribute("font-weight", "750");
-      label.setAttribute("letter-spacing", "0");
-      return label;
-    }
-
-    function svgLine(x1, y1, x2, y2, color, width, opacity = 0.35, dash = "") {
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      line.setAttribute("x1", x1);
-      line.setAttribute("y1", y1);
-      line.setAttribute("x2", x2);
-      line.setAttribute("y2", y2);
-      line.setAttribute("stroke", color);
-      line.setAttribute("stroke-width", width);
-      line.setAttribute("stroke-linecap", "round");
-      line.setAttribute("opacity", opacity);
-      if (dash) line.setAttribute("stroke-dasharray", dash);
-      return line;
-    }
-
-    function renderRibbons(data) {
-      els.ribbons.innerHTML = "";
-      const normWidthU = Math.min(52, 14 + data.Norm_U * 4.2);
-      const normWidthV = Math.min(52, 14 + data.Norm_V * 3.2);
-      const intWidthU = Math.min(46, 10 + Math.sqrt(data.U_int8.reduce((a, x) => a + x * x, 0)) / 11);
-      const intWidthV = Math.min(46, 10 + Math.sqrt(data.vIntSqr) / 12);
-      const finalWidth = Math.min(58, Math.max(14, 16 + Math.abs(data.score) * 1.6));
-      const altWidth = Math.min(42, Math.max(12, 12 + Math.abs(data.scoreFloatV) * 1.4));
-
-      [
-        ribbonPath(194, 182, 252, 182, "#5d8df6", normWidthU, 0.28),
-        ribbonPath(194, 248, 252, 248, "#7657d8", normWidthV, 0.26),
-        ribbonPath(416, 182, 442, 182, "#5d8df6", 20, 0.24),
-        ribbonPath(416, 248, 442, 248, "#7657d8", 20, 0.22),
-        ribbonPath(652, 182, 664, 118, "#5d8df6", 24, 0.23),
-        ribbonPath(652, 248, 664, 395, "#7657d8", 24, 0.22),
-        ribbonPath(874, 118, 888, 118, "#2bbf7f", 22, 0.30),
-        ribbonPath(874, 395, 888, 395, "#ef776d", 22, 0.28),
-        ribbonPath(1098, 118, 1100, 226, "#2bbf7f", intWidthU, 0.22),
-        ribbonPath(1098, 395, 1100, 258, "#ef776d", intWidthV, 0.21),
-        ribbonPath(1248, 244, 1294, 244, "#7657d8", Math.min(42, 12 + Math.abs(data.P) / 300), 0.30),
-        ribbonPath(1442, 244, 1470, 244, "#7657d8", finalWidth, 0.30)
-      ].forEach(path => els.ribbons.appendChild(path));
-
-      [
-        ribbonPath(234, 248, 360, 562, "#3f8f7b", 12, 0.18, "10 8"),
-        ribbonPath(604, 562, 1470, 562, "#3f8f7b", altWidth, 0.24, "10 8")
-      ].forEach(path => els.ribbons.appendChild(path));
-
-      for (let i = 0; i < data.d; i++) {
-        const offset = (i - (data.d - 1) / 2) * Math.max(6, 46 / data.d);
-        const product = Math.abs(data.products[i]);
-        const width = Math.min(8, 2 + product / Math.max(1, Math.max(...data.products.map(Math.abs))) * 5);
-        els.ribbons.appendChild(ribbonPath(1064, 120 + offset, 1100, 226 + offset * 0.36, data.products[i] >= 0 ? "#2bbf7f" : "#ef776d", width, 0.48));
-        els.ribbons.appendChild(ribbonPath(1064, 397 + offset, 1100, 258 + offset * 0.36, data.products[i] >= 0 ? "#2bbf7f" : "#ef776d", width, 0.38));
-      }
-
-      els.ribbons.appendChild(svgText("multiply by H", 296, 83, "#8b96a8"));
-      els.ribbons.appendChild(svgText("rotate", 518, 107, "#8b96a8"));
-      els.ribbons.appendChild(svgText("base: normalize + codebook", 712, 38, "#2a9d6b"));
-      els.ribbons.appendChild(svgText("query: max-abs int8 scale", 712, 535, "#9e342d"));
-      els.ribbons.appendChild(svgText("SIMD-friendly integer dot", 1082, 172, "#8b96a8"));
-      els.ribbons.appendChild(svgText("separate float-V branch", 340, 706, "#3f8f7b"));
-      els.ribbons.appendChild(svgText("alt output aligned with main output", 1068, 706, "#3f8f7b"));
-      els.ribbons.appendChild(svgText("reconstruct magnitude", 1278, 172, "#7657d8"));
-    }
-
     function render() {
       syncStateFromInputs();
-      document.documentElement.style.setProperty("--dim", state.d);
       const data = calculate();
       const absError = Math.abs(data.score - data.exact);
       const relError = Math.abs(data.exact) > 1e-12 ? absError / Math.abs(data.exact) : 0;
-      const accuracy = Math.max(0, Math.min(100, 100 - relError * 100));
       const pathDelta = Math.abs(data.score - data.scoreFloatV);
 
-      els.dimBadge.textContent = state.d;
-      if (els.signToggle) {
-        els.signToggle.setAttribute("aria-checked", String(state.useSigns));
-      }
+      // Toggles
+      els.signToggle.setAttribute("aria-checked", String(state.useSigns));
+      els.ablationToggle.setAttribute("aria-checked", String(state.showAblation));
+      document.body.classList.toggle("show-ablation", state.showAblation);
+      els.ablationCard.classList.toggle("on", state.showAblation);
+      els.heroMetrics.classList.toggle("with-ablation", state.showAblation);
+      els.ablationNoteDot.classList.toggle("on", state.showAblation);
+      els.ablationNoteScore.classList.toggle("on", state.showAblation);
+      els.ablationTag.classList.toggle("on", state.showAblation);
+      els.ablationTag.textContent = state.showAblation ? "Ablation visible" : "Ablation hidden";
+
+      // Hero
       els.exactDot.textContent = fmt(data.exact, 4);
       els.tqScore.textContent = fmt(data.score, 4);
       els.floatVScore.textContent = fmt(data.scoreFloatV, 4);
-      els.pathDelta.textContent = fmt(pathDelta, 4);
-      els.pathNote.textContent = pathDelta < 0.001 ? "same to 1e-3" : `${fmt(pathDelta, 4)} away from int8-V path`;
       els.absError.textContent = fmt(absError, 4);
-      els.relError.textContent = `${fmt(relError * 100, 2)} percent relative`;
-      els.rawP.textContent = fmt(data.P, 0);
+      els.relError.textContent = `${fmt(relError * 100, 2)}% relative`;
 
-      renderChips(els.inputU, state.U, "u", 2);
-      renderChips(els.inputV, state.V, "v", 2);
+      // Chips
       renderChips(els.rotU, data.U_rot, "u", 2);
       renderChips(els.rotV, data.V_rot, "v", 2);
-      renderChips(els.stdU, data.U_std, "good", 3);
-      renderChips(els.queryRotAgain, data.V_rot, "v", 2);
-      renderChips(els.uInt8, data.U_int8, "good", 0);
-      renderChips(els.vInt8, data.V_int8, "hot", 0);
+      renderChips(els.stdU, data.U_std, "u", 3);
+      renderChips(els.uInt8, data.U_int8, "int", 0);
+      renderChips(els.vInt8, data.V_int8, "int", 0);
 
-      els.signVector.textContent = state.useSigns
-        ? `D = [${data.signs.join(", ")}], seed 42`
-        : "D disabled, matching the documented 4D worked example.";
-      els.uNormText.textContent = `U_std = U_rot / ${fmt(data.Norm_U_rot, 4)} x ${fmt(data.sqrtD, 4)}`;
-      els.vMaxText.textContent = `max(abs(V_rot)) = ${fmt(data.V_max, 4)}`;
-      els.bucketText.textContent = `buckets = [${data.buckets.join(", ")}], indices = [${data.cbIndices.join(", ")}]`;
-      els.vScaleText.textContent = `V_scale = 127 / ${fmt(data.V_max, 4)} = ${fmt(data.V_scale, 4)}`;
+      // Formulas / textual readouts
+      els.signVector.innerHTML = state.useSigns
+        ? `D = [${data.signs.join(", ")}], seed 42 — applied element-wise before the FWHT.`
+        : `D disabled — matches the 4D docstring example exactly.`;
+      els.uNormText.innerHTML = `U_std = U_rot / ‖U_rot‖ × √d  =  U_rot / ${fmt(data.Norm_U_rot, 4)} × ${fmt(data.sqrtD, 4)}`;
+      els.bucketText.innerHTML = `buckets = [${data.buckets.join(", ")}],  codebook indices = [${data.cbIndices.join(", ")}]`;
+      els.vScaleText.innerHTML = `V_scale = 127 / ${fmt(data.V_max, 4)} = ${fmt(data.V_scale, 4)}`;
       els.dotValue.textContent = fmt(data.P, 0);
-      els.scaleValues.innerHTML = "";
-      [
-        ["Scale_U", data.Scale_U],
-        ["Scale_V", data.Scale_V]
-      ].forEach(([label, value]) => {
-        const div = document.createElement("div");
-        div.className = "chip warn";
-        div.textContent = `${label}: ${fmt(value, 6)}`;
-        els.scaleValues.appendChild(div);
-      });
-      els.altValues.innerHTML = "";
-      [
-        [`dot(U_int8,V_rot): ${fmt(data.P_floatV, 4)}`],
-        [`Scale_V_rot: ${fmt(data.Scale_V_rot, 6)}`],
-        [`Score_alt: ${fmt(data.scoreFloatV, 4)}`]
-      ].forEach(([text]) => {
-        const div = document.createElement("div");
-        div.className = "chip good long";
-        div.textContent = text;
-        els.altValues.appendChild(div);
-      });
-      els.altText.textContent = `Score_alt = dot(U_int8, V_rot) x Scale_U x (Norm_V / Norm_V_rot)`;
-      els.altScoreValue.textContent = fmt(data.scoreFloatV, 4);
-      els.altScoreText.textContent = `Alt path output. Delta vs main ${fmt(pathDelta, 4)}.`;
+
+      // Step 5 cards
+      els.scaleU.textContent = fmt(data.Scale_U, 6);
+      els.scaleV.textContent = fmt(data.Scale_V, 6);
       els.scoreValue.textContent = fmt(data.score, 4);
-      els.accuracyBar.style.width = `${accuracy}%`;
-      els.scoreText.textContent = `Exact ${fmt(data.exact, 4)}, error ${fmt(absError, 4)}. Alt path delta ${fmt(pathDelta, 4)}.`;
-      els.rotationNotes.textContent = state.d === 4 && !state.useSigns
-        ? "Current defaults reproduce the docstring path: U_rot = H4 x U and V_rot = H4 x V."
-        : "This page uses the same unnormalized FWHT as HadamardRotation for power-of-two dimensions. The optional D vector uses seed 42 signs.";
+
+      // Ablation inline readouts
+      els.pFloatV.textContent = fmt(data.P_floatV, 4);
+      els.pDelta.textContent = fmt(data.P_floatV - data.P, 4);
+      els.altScoreInline.textContent = fmt(data.scoreFloatV, 4);
+      els.altDelta.textContent = fmt(pathDelta, 4);
 
       renderMatrix(data);
+      renderBucketMapping(data);
       renderTables(data);
-      renderRibbons(data);
-      updateFlowScale();
     }
 
+    // ---------- Events ----------
     function setDimension(d) {
       state.d = d;
       state.U = DEFAULTS[d].U.slice();
@@ -1419,26 +1767,17 @@
       render();
     }
 
-    els.dimSelect.addEventListener("change", event => {
-      setDimension(Number(event.target.value));
-    });
-
-    els.signToggle.addEventListener("click", () => {
-      state.useSigns = !state.useSigns;
-      render();
-    });
-
+    els.dimSelect.addEventListener("change", e => setDimension(Number(e.target.value)));
+    els.signToggle.addEventListener("click", () => { state.useSigns = !state.useSigns; render(); });
+    els.ablationToggle.addEventListener("click", () => { state.showAblation = !state.showAblation; render(); });
     els.resetBtn.addEventListener("click", () => {
       state.useSigns = false;
+      state.showAblation = false;
       els.dimSelect.value = "4";
       setDimension(4);
     });
 
-    window.addEventListener("resize", updateFlowScale);
-    if (typeof ResizeObserver !== "undefined") {
-      new ResizeObserver(updateFlowScale).observe(els.flow);
-    }
-
+    // ---------- Init ----------
     renderCodebook();
     renderInputs();
     render();
